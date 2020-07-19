@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -20,6 +22,7 @@ import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
@@ -28,7 +31,22 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.tensorflow.lite.DataType;
+import org.tensorflow.lite.Interpreter;
+import org.tensorflow.lite.support.common.TensorOperator;
+import org.tensorflow.lite.support.common.TensorProcessor;
+import org.tensorflow.lite.support.common.ops.NormalizeOp;
+import org.tensorflow.lite.support.image.ImageProcessor;
+import org.tensorflow.lite.support.image.TensorImage;
+import org.tensorflow.lite.support.image.ops.ResizeOp;
+import org.tensorflow.lite.support.image.ops.ResizeWithCropOrPadOp;
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
@@ -58,6 +76,19 @@ public class CameraActivity extends AppCompatActivity {
     private ImageReader mImageReader;
 
     private int a = 0;
+
+    protected Interpreter tflite;
+    private MappedByteBuffer tfliteModel;
+    private TensorImage inputImageBuffer;
+    private  int imageSizeX;
+    private  int imageSizeY;
+    private TensorBuffer outputProbabilityBuffer;
+    private TensorProcessor probabilityProcessor;
+    private static final float IMAGE_MEAN = 0.0f;
+    private static final float IMAGE_STD = 255.0f;
+    private static final float PROBABILITY_MEAN = 0.0f;
+    private static final float PROBABILITY_STD = 1.0f;
+    private Bitmap bitmap;
 
     CameraDevice.StateCallback stateCallBack = new CameraDevice.StateCallback() {
         @Override
@@ -93,6 +124,12 @@ public class CameraActivity extends AppCompatActivity {
         anto = ((TextView)findViewById(R.id.textanto));
 
         fab = (FloatingActionButton)findViewById(R.id.fab_take_photo);
+
+        try{
+            tflite=new Interpreter(loadmodelfile(this));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -259,6 +296,69 @@ public class CameraActivity extends AppCompatActivity {
 //                kloro.setText(""+new DecimalFormat("##.#####").format(output[1]));
 //                karo.setText(""+new DecimalFormat("##.####").format(output[3]));
 //                anto.setText(""+new DecimalFormat("##.####").format(output[4]));
+
+                bitmap = textureView.getBitmap();
+
+                int imageTensorIndex = 0;
+                int[] imageShape = tflite.getInputTensor(imageTensorIndex).shape(); // {1, height, width, 3}
+
+//                StringBuffer result = new StringBuffer();
+//                for (int i = 0; i < imageShape.length; i++) {
+//                    result.append( imageShape[i] );
+//                    result.append( ", " );
+//                }
+//                String mynewstring = result.toString();
+//
+//                Log.v("Image Input Shape", String.valueOf(mynewstring));
+
+                imageSizeY = imageShape[1];
+                imageSizeX = imageShape[2];
+                DataType imageDataType = tflite.getInputTensor(imageTensorIndex).dataType();
+
+                int probabilityTensorIndex = 0;
+                int[] probabilityShape =
+                        tflite.getOutputTensor(probabilityTensorIndex).shape(); // {1, NUM_CLASSES}
+
+//                StringBuffer result2 = new StringBuffer();
+//                for (int i = 0; i < probabilityShape.length; i++) {
+//                    result2.append( probabilityShape[i] );
+//                    result2.append( ", " );
+//                }
+//                String mynewstring2 = result2.toString();
+//
+//                Log.v("Image Output Shape", String.valueOf(mynewstring2));
+
+                DataType probabilityDataType = tflite.getOutputTensor(probabilityTensorIndex).dataType();
+
+                inputImageBuffer = new TensorImage(imageDataType);
+                outputProbabilityBuffer = TensorBuffer.createFixedSize(probabilityShape, probabilityDataType);
+                probabilityProcessor = new TensorProcessor.Builder().add(getPostprocessNormalizeOp()).build();
+
+                inputImageBuffer = loadImage(bitmap);
+
+                tflite.run(inputImageBuffer.getBuffer(),outputProbabilityBuffer.getBuffer().rewind());
+
+                float[] output =  outputProbabilityBuffer.getFloatArray();
+
+//                StringBuffer result3 = new StringBuffer();
+//                for (int i = 0; i < output.length; i++) {
+//                    result3.append( output[i] );
+//                    result3.append( ", " );
+//                }
+//                String mynewstring3 = result3.toString();
+
+//                Context context = getApplicationContext();
+//                CharSequence text = "Cloro : " + output[0] + "\nCaro : " + output[1] + "\nAnto : " + output[2];
+//                int duration = Toast.LENGTH_LONG;
+//
+//                Toast toast = Toast.makeText(context, text, duration);
+//                toast.show();
+
+//                Log.v("Output Probability", String.valueOf(mynewstring3));
+
+                kloro.setText(""+new DecimalFormat("###.####").format(output[0]));
+                karo.setText(""+new DecimalFormat("###.####").format(output[1]));
+                anto.setText(""+new DecimalFormat("###.####").format(output[2]));
             }
         }
     };
@@ -295,6 +395,39 @@ public class CameraActivity extends AppCompatActivity {
         mBackgroundThread = new HandlerThread("Camera Background");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
+    }
+
+    private TensorImage loadImage(final Bitmap bitmap) {
+        // Loads bitmap into a TensorImage.
+        inputImageBuffer.load(bitmap);
+
+        // Creates processor for the TensorImage.
+        int cropSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
+
+        // TODO(b/143564309): Fuse ops inside ImageProcessor.
+        ImageProcessor imageProcessor =
+                new ImageProcessor.Builder()
+                        .add(new ResizeWithCropOrPadOp(cropSize, cropSize))
+                        .add(new ResizeOp(imageSizeX, imageSizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
+                        .add(getPreprocessNormalizeOp())
+                        .build();
+        return imageProcessor.process(inputImageBuffer);
+    }
+
+    private MappedByteBuffer loadmodelfile(Activity activity) throws IOException {
+        AssetFileDescriptor fileDescriptor=activity.getAssets().openFd("P3Net.tflite");
+        FileInputStream inputStream=new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel=inputStream.getChannel();
+        long startoffset = fileDescriptor.getStartOffset();
+        long declaredLength=fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY,startoffset,declaredLength);
+    }
+
+    private TensorOperator getPreprocessNormalizeOp() {
+        return new NormalizeOp(IMAGE_MEAN, IMAGE_STD);
+    }
+    private TensorOperator getPostprocessNormalizeOp(){
+        return new NormalizeOp(PROBABILITY_MEAN, PROBABILITY_STD);
     }
 
 }
