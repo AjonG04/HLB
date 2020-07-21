@@ -20,8 +20,10 @@
         android:layout_alignParentBottom="true"
         app:menu="@menu/menu"
         android:background="@color/colorPrimary"
-        app:itemIconTint="@drawable/tab_color"
-        app:itemTextColor="@drawable/tab_color"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
         app:labelVisibilityMode="labeled" />
+
+<!--    app:itemIconTint="@drawable/tab_color"-->
+<!--    app:itemTextColor="@drawable/tab_color"-->
 
 </RelativeLayout>
