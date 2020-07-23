@@ -1,9 +1,5 @@
 package com.example.leafpiction;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -22,14 +18,16 @@ import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.renderscript.Element;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.leafpiction.Model.DataModel;
+import com.example.leafpiction.Util.HistoryDatabaseCRUD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.tensorflow.lite.DataType;
@@ -43,13 +41,23 @@ import org.tensorflow.lite.support.image.ops.ResizeOp;
 import org.tensorflow.lite.support.image.ops.ResizeWithCropOrPadOp;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import static android.content.ContentValues.TAG;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -67,6 +75,14 @@ public class CameraActivity extends AppCompatActivity {
     private Size imageDimension;
     private ImageReader imageReader;
     private Bitmap photo;
+
+//    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+//    static {
+//        ORIENTATIONS.append(Surface.ROTATION_0,90);
+//        ORIENTATIONS.append(Surface.ROTATION_90,0);
+//        ORIENTATIONS.append(Surface.ROTATION_180,270);
+//        ORIENTATIONS.append(Surface.ROTATION_270,180);
+//    }
 
     //savefile
     private File file;
@@ -131,8 +147,60 @@ public class CameraActivity extends AppCompatActivity {
         }catch (Exception e) {
             e.printStackTrace();
         }
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takePicture();
+            }
+        });
     }
 
+    private void takePicture() {
+        Bitmap bmp = textureView.getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        float[] output =  doInference(bmp);
+        float chlorophyll = output[0];
+        float carotenoid = output[1];
+        float anthocyanin = output[2];
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date date = new Date();
+        String datetime = dateFormat.format(date);
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(date);
+
+        String filename = "Image_" + timeStamp;
+
+        DataModel dataModel = new DataModel(byteArray, chlorophyll, carotenoid, anthocyanin, datetime, filename, 0);
+
+        Context context = getApplicationContext();
+        CharSequence text;
+        int duration = Toast.LENGTH_SHORT;
+
+        try {
+            save(dataModel);
+            text = "Photo Added to History";
+        } catch (Exception e) {
+            text = "Error while trying to add photo to database";
+            Log.d(TAG, "Error while trying to add photo to database");
+        }
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
+//        save(dataModel);
+    }
+
+    private void save(DataModel dataModel) {
+        HistoryDatabaseCRUD dbHandler = new HistoryDatabaseCRUD();
+        Context context = getApplicationContext();
+        dbHandler.addRecord(context, dataModel);
+    }
 
     private void openCamera(){
         CameraManager manager = (CameraManager)getSystemService(Context.CAMERA_SERVICE);
@@ -266,96 +334,10 @@ public class CameraActivity extends AppCompatActivity {
         public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
 
             if (textureView.getBitmap() != null){
-                photo = textureView.getBitmap();
-                photo = Bitmap.createScaledBitmap(photo, 32, 32, true);
-
-                int x = photo.getWidth();
-                int y = photo.getHeight();
-
-                int componentsPerPixel = 3;
-                int totalPixels = x * y;
-                int totalBytes = totalPixels * componentsPerPixel;
-                float[] rgbValues = new float[totalBytes];
-                int[] argbPixels = new int[totalPixels];
-
-                photo.getPixels(argbPixels, 0, x, 0, 0, x, y);
-
-                for (int i = 0; i < totalPixels; i++) {
-                    final int argbPixel = argbPixels[i];
-                    rgbValues[i * componentsPerPixel + 0] = (float) ((((argbPixel >> 16) & 0xff) / 255.0));
-                    rgbValues[i * componentsPerPixel + 1] = (float) ((((argbPixel >> 8) & 0xff) / 255.0));
-                    rgbValues[i * componentsPerPixel + 2] = (float) (((argbPixel & 0xff) / 255.0));
-                }
-
-//                float[] output = new float[5];
-//                TensorFlowInferenceInterface tensorflow = new TensorFlowInferenceInterface(getAssets(),
-//                        "rgb_batch30_epoch30_Adam_shallow.pb");
-//                tensorflow.feed("conv2d_11_input", rgbValues, 1,32, 32, 3);
-//                tensorflow.run(new String[]{"output_node0"});
-//                tensorflow.fetch("output_node0", output);
-//
-//                kloro.setText(""+new DecimalFormat("##.#####").format(output[1]));
-//                karo.setText(""+new DecimalFormat("##.####").format(output[3]));
-//                anto.setText(""+new DecimalFormat("##.####").format(output[4]));
 
                 bitmap = textureView.getBitmap();
 
-                int imageTensorIndex = 0;
-                int[] imageShape = tflite.getInputTensor(imageTensorIndex).shape(); // {1, height, width, 3}
-
-//                StringBuffer result = new StringBuffer();
-//                for (int i = 0; i < imageShape.length; i++) {
-//                    result.append( imageShape[i] );
-//                    result.append( ", " );
-//                }
-//                String mynewstring = result.toString();
-//
-//                Log.v("Image Input Shape", String.valueOf(mynewstring));
-
-                imageSizeY = imageShape[1];
-                imageSizeX = imageShape[2];
-                DataType imageDataType = tflite.getInputTensor(imageTensorIndex).dataType();
-
-                int probabilityTensorIndex = 0;
-                int[] probabilityShape =
-                        tflite.getOutputTensor(probabilityTensorIndex).shape(); // {1, NUM_CLASSES}
-
-//                StringBuffer result2 = new StringBuffer();
-//                for (int i = 0; i < probabilityShape.length; i++) {
-//                    result2.append( probabilityShape[i] );
-//                    result2.append( ", " );
-//                }
-//                String mynewstring2 = result2.toString();
-//
-//                Log.v("Image Output Shape", String.valueOf(mynewstring2));
-
-                DataType probabilityDataType = tflite.getOutputTensor(probabilityTensorIndex).dataType();
-
-                inputImageBuffer = new TensorImage(imageDataType);
-                outputProbabilityBuffer = TensorBuffer.createFixedSize(probabilityShape, probabilityDataType);
-                probabilityProcessor = new TensorProcessor.Builder().add(getPostprocessNormalizeOp()).build();
-
-                inputImageBuffer = loadImage(bitmap);
-
-                tflite.run(inputImageBuffer.getBuffer(),outputProbabilityBuffer.getBuffer().rewind());
-
-                float[] output =  outputProbabilityBuffer.getFloatArray();
-
-//                StringBuffer result3 = new StringBuffer();
-//                for (int i = 0; i < output.length; i++) {
-//                    result3.append( output[i] );
-//                    result3.append( ", " );
-//                }
-//                String mynewstring3 = result3.toString();
-
-//                Context context = getApplicationContext();
-//                CharSequence text = "Cloro : " + output[0] + "\nCaro : " + output[1] + "\nAnto : " + output[2];
-//                int duration = Toast.LENGTH_LONG;
-//
-//                Toast toast = Toast.makeText(context, text, duration);
-//                toast.show();
-
-//                Log.v("Output Probability", String.valueOf(mynewstring3));
+                float[] output =  doInference(bitmap);
 
                 kloro.setText(""+new DecimalFormat("###.####").format(output[0]));
                 karo.setText(""+new DecimalFormat("###.####").format(output[1]));
@@ -363,6 +345,33 @@ public class CameraActivity extends AppCompatActivity {
             }
         }
     };
+
+    private float[] doInference(Bitmap bitmap){
+        int imageTensorIndex = 0;
+        int[] imageShape = tflite.getInputTensor(imageTensorIndex).shape(); // {1, height, width, 3}
+
+        imageSizeY = imageShape[1];
+        imageSizeX = imageShape[2];
+        DataType imageDataType = tflite.getInputTensor(imageTensorIndex).dataType();
+
+        int probabilityTensorIndex = 0;
+        int[] probabilityShape =
+                tflite.getOutputTensor(probabilityTensorIndex).shape(); // {1, NUM_CLASSES}
+
+        DataType probabilityDataType = tflite.getOutputTensor(probabilityTensorIndex).dataType();
+
+        inputImageBuffer = new TensorImage(imageDataType);
+        outputProbabilityBuffer = TensorBuffer.createFixedSize(probabilityShape, probabilityDataType);
+        probabilityProcessor = new TensorProcessor.Builder().add(getPostprocessNormalizeOp()).build();
+
+        inputImageBuffer = loadImage(bitmap);
+
+        tflite.run(inputImageBuffer.getBuffer(),outputProbabilityBuffer.getBuffer().rewind());
+
+        float[] output =  outputProbabilityBuffer.getFloatArray();
+
+        return output;
+    }
 
     @Override
     protected void onResume() {

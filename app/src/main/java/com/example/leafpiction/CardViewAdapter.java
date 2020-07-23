@@ -1,5 +1,7 @@
 package com.example.leafpiction;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,16 +10,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.leafpiction.Model.DataModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.CardViewViewHolder> {
 
-    private ArrayList<Photo> list;
-    public CardViewAdapter(ArrayList<Photo> list) {
+    private List<DataModel> list;
+    public CardViewAdapter(List<DataModel> list) {
         this.list = list;
     }
 
@@ -30,14 +34,17 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.CardVi
 
     @Override
     public void onBindViewHolder(@NonNull CardViewAdapter.CardViewViewHolder holder, int position) {
-        Photo hero = list.get(position);
+        DataModel dataModel = list.get(position);
+
+        byte[] image = dataModel.getPhoto();
+        Bitmap bmp= BitmapFactory.decodeByteArray(image, 0 , image.length);
+
         Glide.with(holder.itemView.getContext())
-                .load(hero.getPhoto())
+                .load(bmp)
                 .apply(new RequestOptions().override(350, 550))
                 .into(holder.imgPhoto);
-        holder.tvName.setText(hero.getName());
-        holder.tvDetail.setText(hero.getDate());
-
+        holder.tvName.setText(dataModel.getFilename());
+        holder.tvDetail.setText(dataModel.getDatetime());
     }
 
     @Override
