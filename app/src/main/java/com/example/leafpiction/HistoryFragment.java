@@ -2,8 +2,10 @@ package com.example.leafpiction;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,6 +15,7 @@ import com.example.leafpiction.Util.HistoryDatabaseCRUD;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -23,16 +26,14 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HistoryFragment extends Fragment {
+public class HistoryFragment extends Fragment  {
 
-//    private RecyclerView rvHeroes;
     int list_number;
     private List<DataModel> list = new ArrayList<>();
 
     public HistoryFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,7 +48,7 @@ public class HistoryFragment extends Fragment {
 //        list.addAll(TrialData.getListData());
         final View view = inflater.inflate(R.layout.fragment_history, container, false);
         final FragmentActivity c = getActivity();
-        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rv_data);
+        final RecyclerView recyclerView = view.findViewById(R.id.rv_data);
         LinearLayoutManager layoutManager = new LinearLayoutManager(c);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -64,7 +65,7 @@ public class HistoryFragment extends Fragment {
             }
         }).start();
 
-        final ConstraintLayout cl_no_history = (ConstraintLayout)view.findViewById(R.id.cl_no_history);
+        final ConstraintLayout cl_no_history = view.findViewById(R.id.cl_no_history);
 
         if(list_number == 0){
             cl_no_history.setVisibility(View.VISIBLE);

@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CameraActivity"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".DetailActivity">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:background="@color/cardview_dark_background">
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="450dp"-->
+<!--        android:background="@color/cardview_dark_background">-->
 
-        <TextureView
-            android:id="@+id/textureview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:visibility="visible" />
+<!--&lt;!&ndash;        <TextureView&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/textureview"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_alignParentStart="true"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_alignParentTop="true"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:visibility="visible" />&ndash;&gt;-->
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_take_photo"
-            android:layout_width="292dp"
-            android:layout_height="276dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_baseline_photo_camera"
-            android:tint="@color/colorPrimary"
-            app:fabSize="normal" />
+<!--    </RelativeLayout>-->
 
-    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/no_history_small"
+        android:layout_gravity="center_horizontal"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -100,6 +103,7 @@
 
             </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -151,6 +155,7 @@
 
             </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -204,4 +209,30 @@
         </LinearLayout>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:text="Delete"
+        android:fontFamily="@font/sourcesansprobold"
+        android:backgroundTint="@color/design_default_color_error"
+        />
+
+    <Button
+        android:id="@+id/btn_upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp"
+        android:text="Upload to server"
+        android:fontFamily="@font/sourcesansprobold"
+        android:backgroundTint="@color/design_default_color_secondary_variant"
+        />
+
 </LinearLayout>
+</ScrollView>

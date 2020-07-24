@@ -1,5 +1,6 @@
 package com.example.leafpiction;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -12,7 +13,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.leafpiction.Model.DataModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -23,7 +23,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.CardVi
     private List<DataModel> list;
     public CardViewAdapter(List<DataModel> list) {
         this.list = list;
-    }
+    };
 
     @NonNull
     @Override
@@ -56,11 +56,28 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.CardVi
         ImageView imgPhoto;
         TextView tvName, tvDetail;
 
-        CardViewViewHolder(View itemView) {
+        CardViewViewHolder(final View itemView) {
             super(itemView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(), DetailActivity.class);
+                    intent.putExtra("id", list.get(getAdapterPosition()).getId());
+                    intent.putExtra("photo", list.get(getAdapterPosition()).getPhoto());
+                    intent.putExtra("cloro", list.get(getAdapterPosition()).getChlorophyll());
+                    intent.putExtra("caro", list.get(getAdapterPosition()).getCarotenoid());
+                    intent.putExtra("anto", list.get(getAdapterPosition()).getAnthocyanin());
+                    view.getContext().startActivity(intent);
+                }
+            });
             imgPhoto = itemView.findViewById(R.id.img_item_photo);
             tvName = itemView.findViewById(R.id.tv_item_name);
             tvDetail = itemView.findViewById(R.id.tv_item_date);
         }
     }
+
+//    public interface CardListener {
+//        public void onClick(View view, int position);
+//    }
 }
