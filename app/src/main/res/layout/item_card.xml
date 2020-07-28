@@ -19,11 +19,8 @@
             android:id="@+id/img_item_photo"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/antoimg"
-            android:scaleType="centerCrop"
-            android:background="#000000"
-            android:padding="1dp"
-            />
+            android:src="@color/cardview_dark_background"
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/sourcesansprobold"
                 android:textSize="14dp"
+                android:textColor="@color/black"
                 android:text="Image_10012020" />
 
             <TextView

@@ -29,6 +29,8 @@ import android.widget.Toast;
 import com.example.leafpiction.Model.DataModel;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
@@ -107,6 +109,9 @@ public class CameraActivity extends AppCompatActivity {
     private static final float PROBABILITY_STD = 1.0f;
     private Bitmap bitmap;
 
+    HistoryDatabaseCRUD dbHandler;
+    Context context;
+
     CameraDevice.StateCallback stateCallBack = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
@@ -124,8 +129,6 @@ public class CameraActivity extends AppCompatActivity {
             cameraDev.close();
             cameraDevice = null;
         }
-
-
     };
 
     @Override
@@ -142,21 +145,24 @@ public class CameraActivity extends AppCompatActivity {
 
         fab = (FloatingActionButton)findViewById(R.id.fab_take_photo);
 
+        dbHandler = new HistoryDatabaseCRUD();
+        context = getApplicationContext();
+
         try{
-            tflite=new Interpreter(loadmodelfile(this));
-        }catch (Exception e) {
+            tflite = new Interpreter(loadmodelfile(this));
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                takePicture();
+                takePicture(view);
             }
         });
     }
 
-    private void takePicture() {
+    private void takePicture(View view) {
         Bitmap bmp = textureView.getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -178,28 +184,18 @@ public class CameraActivity extends AppCompatActivity {
 
         DataModel dataModel = new DataModel(byteArray, chlorophyll, carotenoid, anthocyanin, datetime, filename, 0);
 
-        Context context = getApplicationContext();
-        CharSequence text;
-        int duration = Toast.LENGTH_SHORT;
+        String text;
 
         try {
-            save(dataModel);
+            dbHandler.addRecord(context, dataModel);
             text = "Photo Added to History";
         } catch (Exception e) {
             text = "Error while trying to add photo to database";
             Log.d(TAG, "Error while trying to add photo to database");
         }
 
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-
-//        save(dataModel);
-    }
-
-    private void save(DataModel dataModel) {
-        HistoryDatabaseCRUD dbHandler = new HistoryDatabaseCRUD();
-        Context context = getApplicationContext();
-        dbHandler.addRecord(context, dataModel);
+        Snackbar snackbar = Snackbar.make(view, text, Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 
     private void openCamera(){
@@ -241,7 +237,6 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void createCameraPreview() {
-
         try {
             SurfaceTexture texture = textureView.getSurfaceTexture();
             assert texture!=null;
