@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.transition.TransitionSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
+
+import java.text.DecimalFormat;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -23,7 +26,7 @@ public class DetailActivity extends AppCompatActivity {
 
     int id;
     byte[] byteArray;
-    String kloro, karo, anto;
+    float kloro, karo, anto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +58,16 @@ public class DetailActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         byteArray = extras.getByteArray("photo");
         id = extras.getInt("id");
-        kloro = String.valueOf(extras.getFloat("cloro"));
-        karo = String.valueOf(extras.getFloat("caro"));
-        anto = String.valueOf(extras.getFloat("anto"));
+        kloro = extras.getFloat("cloro");
+        karo = extras.getFloat("caro");
+        anto = extras.getFloat("anto");
 
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         iv_photo.setImageBitmap(bmp);
 
-        tv_cloro.setText(kloro);
-        tv_anto.setText(anto);
-        tv_caro.setText(karo);
+        tv_cloro.setText("" + new DecimalFormat("###.####").format(kloro));
+        tv_anto.setText("" + new DecimalFormat("###.####").format(anto));
+        tv_caro.setText("" + new DecimalFormat("###.####").format(karo));
     }
+
 }

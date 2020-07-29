@@ -1,5 +1,6 @@
 package com.example.leafpiction;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.CardViewViewHolder> {
 
     private List<DataModel> list;
+
     public CardViewAdapter(List<DataModel> list) {
         this.list = list;
     };
@@ -76,8 +78,4 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.CardVi
             tvDetail = itemView.findViewById(R.id.tv_item_date);
         }
     }
-
-//    public interface CardListener {
-//        public void onClick(View view, int position);
-//    }
 }
