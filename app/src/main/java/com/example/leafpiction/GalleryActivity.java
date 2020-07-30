@@ -129,9 +129,9 @@ public class GalleryActivity extends AppCompatActivity {
 
         try {
             dbHandler.addRecord(context, dataModel);
-            text = "Photo Added to History";
+            text = getResources().getString(R.string.addPhoto);
         } catch (Exception e) {
-            text = "Error while trying to add photo to database";
+            text = getResources().getString(R.string.errorAddPhoto);
             Log.d(TAG, "Error while trying to add photo to database");
         }
 

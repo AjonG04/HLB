@@ -1,8 +1,10 @@
 package com.example.leafpiction;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DecimalFormat;
 
@@ -49,6 +52,16 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 dbHandler.deleteRecord(getApplicationContext(), id);
                 finish();
+            }
+        });
+
+        btn_upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar snackbar = Snackbar.make(view, getResources().getString(R.string.inDevelopment), Snackbar.LENGTH_SHORT);
+                ColorStateList colorPrimary = ContextCompat.getColorStateList(view.getContext(), R.color.colorPrimaryDark);
+                snackbar.setBackgroundTintList(colorPrimary);
+                snackbar.show();
             }
         });
 

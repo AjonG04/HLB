@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Leaf Piction</string>
+    <string name="sub_title">Prediksi Pigmen Daun</string>
+
+    <!-- String for Bottom Navigation Menu -->
+    <string name="home">Beranda</string>
+    <string name="history">Riwayat</string>
+    <string name="setting">Pengaturan</string>
+    <string name="about">Tentang</string>
+
+    <!-- String for Fragment Home  -->
+    <string name="take_photo">Ambil Gambar</string>
+    <string name="gallery">Tambah Gambar dari Galeri</string>
+
+    <!-- String for Fragment History  -->
+    <string name="sort">Urutkan dari</string>
+    <string name="latest">Terbaru</string>
+    <string name="oldest">Terlama</string>
+    <string name="empty">Tidak Ada Data Tersimpan</string>
+
+    <!-- String for Prediction  -->
+    <string name="detailTitle">Prediksi Pigmen</string>
+    <string name="clorophyll">Klorofil</string>
+    <string name="carotenoid">Karotenoid</string>
+    <string name="antocyanin">Antosianin</string>
+
+    <!-- String for Button  -->
+    <string name="save">Simpan Gambar</string>
+    <string name="upload">Unggah ke Server</string>
+    <string name="delete">Hapus</string>
+
+    <!-- String for Fragment Setting  -->
+    <string name="txt_lang">Bahasa</string>
+    <string name="lang">Indonesia</string>
+
+    <!-- String for Snackbar, AlertDialog, etc  -->
+    <string name="addPhoto">Foto ditambahkan ke Riwayat</string>
+    <string name="errorAddPhoto">Error ketika menyimpan foto ke database</string>
+    <string name="inDevelopment">Fitur masih dalam pengembangan</string>
+    <string name="choose">Pilih Bahasa</string>
+</resources>

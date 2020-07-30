@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
@@ -13,10 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,16 +35,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     private static final int CAMERA_REQUEST = 1888;
 
-    Uri imageuri;
-    Bitmap bitmap;
-
-    Button btn_recent, btn_latest;
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+
+        pref = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        editor = pref.edit();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -112,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Uri imageuri;
+        Bitmap bitmap = null;
+
         if(requestCode == 12 && resultCode == RESULT_OK && data != null) {
             imageuri = data.getData();
             try {
@@ -138,9 +147,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void reverseListOrder(View view){
-        SharedPreferences pref = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-
         switch (view.getId()) {
             case R.id.btn_latest:
                 editor.putBoolean("defaultOrder", true);
@@ -156,4 +162,51 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
     }
 
+    public void changeLanguage(View view){
+
+//        String mystring = getResources().getString(R.string.mystring);
+
+        String[] language = {
+                "English",
+                "Indonesia"
+        };
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+        mBuilder.setTitle(getResources().getString(R.string.choose));
+        mBuilder.setSingleChoiceItems(language, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == 0){
+                    setLocale("en");
+                    recreate();
+                }
+                else if (i == 1){
+                    setLocale("id");
+                    recreate();
+                }
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog mDialog = mBuilder.create();
+        mDialog.show();
+    }
+
+    private void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+
+        editor.putString("Language", lang);
+        editor.commit();
+    }
+
+    @Override
+    public void recreate() {
+        super.recreate();
+
+        bottomNavigationView.setSelectedItemId(R.id.home);
+    }
 }

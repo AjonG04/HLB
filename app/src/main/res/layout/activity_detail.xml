@@ -29,7 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="PIGMENT PREDICTION"
+                android:text="@string/detailTitle"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:letterSpacing="0.1"
                 android:fontFamily="@font/sourcesansprobold"
@@ -59,7 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/sourcesansprobold"
-                    android:text="Clorophyll"
+                    android:text="@string/clorophyll"
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
@@ -112,7 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/sourcesansprobold"
-                    android:text="Carotenoid"
+                    android:text="@string/carotenoid"
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
@@ -164,7 +165,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/sourcesansprobold"
-                    android:text="Antocyanin"
+                    android:text="@string/antocyanin"
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
@@ -201,7 +202,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="30dp"
-            android:text="Upload to server"
+            android:text="@string/upload"
             android:fontFamily="@font/sourcesansprobold"
             android:backgroundTint="@color/design_default_color_secondary_variant"
             />
@@ -214,7 +215,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Delete"
+            android:text="@string/delete"
             android:fontFamily="@font/sourcesansprobold"
             android:backgroundTint="@color/design_default_color_error"
             />

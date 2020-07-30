@@ -1,10 +1,42 @@
 <resources>
     <string name="app_name">Leaf Piction</string>
-    <string name="home"> Home </string>
-    <string name="history"> History </string>
-    <string name="setting"> Setting </string>
-    <string name="about"> About </string>
+    <string name="sub_title">Leaf Pigment Prediction</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- String for Bottom Navigation Menu -->
+    <string name="home">Home</string>
+    <string name="history">History</string>
+    <string name="setting">Setting</string>
+    <string name="about">About</string>
+
+    <!-- String for Fragment Home  -->
+    <string name="take_photo">Take Photo</string>
+    <string name="gallery">Add Image from Gallery</string>
+
+    <!-- String for Fragment History  -->
+    <string name="sort">Sort by</string>
+    <string name="latest">Latest</string>
+    <string name="oldest">Oldest</string>
+    <string name="empty">No Data Saved</string>
+
+    <!-- String for Prediction  -->
+    <string name="detailTitle">Pigment Prediction</string>
+    <string name="clorophyll">Chlorophyll</string>
+    <string name="carotenoid">Carotenoid</string>
+    <string name="antocyanin">Antocyanin</string>
+
+    <!-- String for Button  -->
+    <string name="save">Save Photo</string>
+    <string name="upload">Upload to Server</string>
+    <string name="delete">Delete</string>
+
+    <!-- String for Fragment Setting  -->
+    <string name="txt_lang">Language</string>
+    <string name="lang">English</string>
+
+    <!-- String for Snackbar, AlertDialog, etc  -->
+    <string name="addPhoto">Photo Added to History</string>
+    <string name="errorAddPhoto">Error while trying to add photo to database</string>
+    <string name="inDevelopment">Feature is still on development</string>
+    <string name="choose">Choose Language</string>
+
 </resources>
