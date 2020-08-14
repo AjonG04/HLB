@@ -163,6 +163,10 @@ public class GalleryActivity extends AppCompatActivity {
 
         float[] output =  outputProbabilityBuffer.getFloatArray();
 
+        output[0] = output[0] * 892.24595f + 0.0032483f;
+        output[1] = output[1] * 211.29755f + 0.0f;
+        output[2] = output[2] * 345.45058f + 0.0f;
+
         return output;
     }
 

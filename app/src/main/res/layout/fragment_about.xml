@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:fontFamily="@font/sourcesansprobold"
+            android:fontFamily="@font/sourcesansproblack"
             android:letterSpacing="0.2"
             android:text="@string/sub_title"
             android:textAllCaps="true"
