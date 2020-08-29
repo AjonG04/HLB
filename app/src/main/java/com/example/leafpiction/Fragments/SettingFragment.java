@@ -1,9 +1,11 @@
-package com.example.leafpiction;
+package com.example.leafpiction.Fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.leafpiction.R;
 
 import androidx.fragment.app.Fragment;
 

@@ -1,4 +1,4 @@
-package com.example.leafpiction;
+package com.example.leafpiction.Activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -27,9 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.leafpiction.Model.DataModel;
+import com.example.leafpiction.R;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.tensorflow.lite.DataType;

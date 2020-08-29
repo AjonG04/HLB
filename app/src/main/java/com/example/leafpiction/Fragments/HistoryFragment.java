@@ -1,4 +1,4 @@
-package com.example.leafpiction;
+package com.example.leafpiction.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.example.leafpiction.CardViewAdapter;
 import com.example.leafpiction.Model.DataModel;
+import com.example.leafpiction.R;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
 
 import java.util.ArrayList;

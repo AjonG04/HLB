@@ -1,4 +1,4 @@
-package com.example.leafpiction;
+package com.example.leafpiction.Fragments;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.leafpiction.R;
+
 import androidx.fragment.app.Fragment;
-import mehdi.sakout.aboutpage.AboutPage;
-import mehdi.sakout.aboutpage.Element;
+//import mehdi.sakout.aboutpage.AboutPage;
+//import mehdi.sakout.aboutpage.Element;
 
 
 /**

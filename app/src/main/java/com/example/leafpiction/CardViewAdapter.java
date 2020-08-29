@@ -1,6 +1,5 @@
 package com.example.leafpiction;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.leafpiction.Activities.DetailActivity;
 import com.example.leafpiction.Model.DataModel;
 
 import java.util.List;

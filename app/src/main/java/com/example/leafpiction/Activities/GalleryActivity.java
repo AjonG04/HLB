@@ -1,4 +1,4 @@
-package com.example.leafpiction;
+package com.example.leafpiction.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.leafpiction.Model.DataModel;
+import com.example.leafpiction.R;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
 import com.google.android.material.snackbar.Snackbar;
 
