@@ -23,11 +23,13 @@ import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.leafpiction.Model.DataModel;
 import com.example.leafpiction.R;
+import com.example.leafpiction.RectShape;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -160,6 +162,10 @@ public class CameraActivity extends AppCompatActivity {
                 takePicture(view);
             }
         });
+
+        RectShape rectShape = new RectShape(this);
+        addContentView(rectShape, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT));
     }
 
     private void takePicture(View view) {
