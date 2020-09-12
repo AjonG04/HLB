@@ -127,7 +127,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(bitmap != null){
-            loadGalleryActivity(bitmap);
+
+            int nh = (int) ( bitmap.getHeight() * (512.0 / bitmap.getWidth()) );
+            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
+
+            loadGalleryActivity(scaled);
+
         }
     }
 
