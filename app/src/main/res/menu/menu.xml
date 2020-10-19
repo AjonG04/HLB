@@ -13,14 +13,13 @@
         android:icon="@drawable/ic_history"
         android:title="@string/history"/>
     <item
+        android:id="@+id/help"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_help_24"
+        android:title="@string/help"/>
+    <item
         android:id="@+id/about"
         android:enabled="true"
         android:icon="@drawable/ic_info"
         android:title="@string/about"/>
-    <item
-        android:id="@+id/setting"
-        android:enabled="true"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/setting"/>
-
 </menu>

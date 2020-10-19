@@ -21,11 +21,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.example.leafpiction.Fragments.AboutFragment;
 import com.example.leafpiction.Fragments.HistoryFragment;
 import com.example.leafpiction.Fragments.HomeFragment;
-import com.example.leafpiction.Fragments.SettingFragment;
+import com.example.leafpiction.Fragments.HelpFragment;
 import com.example.leafpiction.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -36,6 +37,8 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
+    ImageView changeLang;
+
     private static final int CAMERA_REQUEST = 1888;
 
     SharedPreferences pref;
@@ -54,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+
+        changeLang = findViewById(R.id.img_change_language);
+        changeLang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeLanguage();
+            }
+        });
 
         pref = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         editor = pref.edit();
@@ -90,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.about:
                 selectedFragment = new AboutFragment();
                 break;
-            case R.id.setting:
-                selectedFragment = new SettingFragment();
+            case R.id.help:
+                selectedFragment = new HelpFragment();
                 break;
         }
 
@@ -163,9 +174,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
     }
 
-    public void changeLanguage(View view){
-
-//        String mystring = getResources().getString(R.string.mystring);
+    public void changeLanguage(){
 
         String[] language = {
                 "English",

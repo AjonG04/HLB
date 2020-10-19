@@ -6,7 +6,7 @@
     <!-- String for Bottom Navigation Menu -->
     <string name="home">Beranda</string>
     <string name="history">Riwayat</string>
-    <string name="setting">Pengaturan</string>
+    <string name="help">Bantuan</string>
     <string name="about">Tentang</string>
 
     <!-- String for Fragment Home  -->

@@ -5,7 +5,7 @@
     <!-- String for Bottom Navigation Menu -->
     <string name="home">Home</string>
     <string name="history">History</string>
-    <string name="setting">Setting</string>
+    <string name="help">Help</string>
     <string name="about">About</string>
 
     <!-- String for Fragment Home  -->
