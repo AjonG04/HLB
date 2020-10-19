@@ -24,6 +24,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.leafpiction.Fragments.AboutFragment;
+import com.example.leafpiction.Fragments.HelpThreeFragment;
+import com.example.leafpiction.Fragments.HelpTwoFragment;
 import com.example.leafpiction.Fragments.HistoryFragment;
 import com.example.leafpiction.Fragments.HomeFragment;
 import com.example.leafpiction.Fragments.HelpFragment;
@@ -218,5 +220,20 @@ public class MainActivity extends AppCompatActivity {
         super.recreate();
 
         bottomNavigationView.setSelectedItemId(R.id.home);
+    }
+
+    public void LoadHelp(View view){
+        Fragment selectedFragment = new HelpFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+    }
+
+    public void LoadHelpTwo(View view){
+        Fragment selectedFragment = new HelpTwoFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+    }
+
+    public void LoadHelpThree(View view){
+        Fragment selectedFragment = new HelpThreeFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
     }
 }

@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/sourcesansprobold"
             android:letterSpacing="0.1"
-            android:text="Live Pigment Prediction"
+            android:text="Upload Image to Server for Big Data"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textSize="16dp"
@@ -39,38 +39,39 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView2"
             app:layout_constraintVertical_bias="0.11" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/materialButton2"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/sourcesansprobold"
+            android:onClick="LoadHelpTwo"
+            android:text="Prev"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView9"
+            app:layout_constraintVertical_bias="1.0"
+            app:strokeColor="@color/design_default_color_primary"
+            app:strokeWidth="1dp"
+            tools:ignore="OnClick" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
             android:fontFamily="@font/sourcesansproregular"
-            android:text="1 / 3"
+            android:text="3 / 3"
             android:textColor="@color/black"
             android:textSize="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView9"
-            app:layout_constraintVertical_bias="1.0"
-            android:layout_marginBottom="40dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:onClick="LoadHelpTwo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="20dp"
-            style="?attr/materialButtonOutlinedStyle"
-            app:strokeColor="@color/design_default_color_primary"
-            app:strokeWidth="1dp"
-            android:fontFamily="@font/sourcesansprobold"
-            android:text="Next"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9"
-            app:layout_constraintVertical_bias="1.0"
-            tools:ignore="OnClick" />
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
