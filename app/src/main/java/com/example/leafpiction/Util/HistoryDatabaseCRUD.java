@@ -52,57 +52,6 @@ public class HistoryDatabaseCRUD {
         }
     }
 
-//    public long addOrUpdateRecord(Context context, DataModel dataModel) {
-//        // The database connection is cached so it's not expensive to call getWriteableDatabase() multiple times.
-//        SQLiteDatabase db = HistoryDatabaseHelper.getInstance(context).getWritableDatabase();
-//        long id = -1;
-//
-//        db.beginTransaction();
-//        try {
-//            ContentValues values = new ContentValues();
-//            values.put(HISTORY_PHOTO, dataModel.getPhoto());
-//            values.put(HISTORY_CLOROPHYLL, dataModel.getChlorophyll());
-//            values.put(HISTORY_CAROTENOID, dataModel.getCarotenoid());
-//            values.put(HISTORY_ANTHOCYANIN, dataModel.getAnthocyanin());
-//            values.put(HISTORY_DATETIME, dataModel.getDatetime());
-//            values.put(HISTORY_FILENAME, dataModel.getFilename());
-//            values.put(HISTORY_UPLOADED, dataModel.getUploaded());
-//
-//            // First try to update the user in case the user already exists in the database
-//            // This assumes userNames are unique
-////            int rows = db.update(DatabaseTable.TABLE_USERDATA, values, USERDATA_USERNAME + "= ?", new String[]{userModel.getUsername()});
-//
-//            int rows = db.update(DatabaseTable.TABLE_HISTORY, values, HISTORY_ID + "= ?", new String[]{String.valueOf(dataModel.getId())});
-//
-//            // Check if update succeeded
-//            if (rows == 1) {
-//                // Get the primary key of the user we just updated
-//                String usersSelectQuery = String.format("SELECT %s FROM %s WHERE %s = ?",
-//                        HISTORY_ID, DatabaseTable.TABLE_HISTORY, HISTORY_ID);
-//                Cursor cursor = db.rawQuery(usersSelectQuery, new String[]{String.valueOf(dataModel.getId())});
-//                try {
-//                    if (cursor.moveToFirst()) {
-//                        id = cursor.getInt(0);
-//                        db.setTransactionSuccessful();
-//                    }
-//                } finally {
-//                    if (cursor != null && !cursor.isClosed()) {
-//                        cursor.close();
-//                    }
-//                }
-//            } else {
-//                // user with this userName did not already exist, so insert new user
-//                id = db.insertOrThrow(DatabaseTable.TABLE_HISTORY, null, values);
-//                db.setTransactionSuccessful();
-//            }
-//        } catch (Exception e) {
-//            Log.d(TAG, "Error while trying to add or update user");
-//        } finally {
-//            db.endTransaction();
-//        }
-//        return id;
-//    }
-
     public List<DataModel> getAllRecords(Context context) {
         List<DataModel> users = new ArrayList<>();
 
@@ -143,17 +92,6 @@ public class HistoryDatabaseCRUD {
         return users;
     }
 
-//    public int updateUserProfilePicture(Context context, DataModel dataModel) {
-//        SQLiteDatabase db = HistoryDatabaseHelper.getInstance(context).getWritableDatabase();
-//
-//        ContentValues values = new ContentValues();
-//        values.put(USERDATA_PHOTO, dataModel.getPhoto());
-//
-//        // Updating profile picture url for user with that userName
-//        return db.update(DatabaseTable.TABLE_HISTORY, values, USERDATA_USERNAME + " = ?",
-//                new String[] { String.valueOf(dataModel.getUsername()) });
-//    }
-
 //    public void deleteAllRecords(Context context) {
 //        SQLiteDatabase db = HistoryDatabaseHelper.getInstance(context).getWritableDatabase();
 //        db.beginTransaction();
@@ -192,11 +130,49 @@ public class HistoryDatabaseCRUD {
 
             db.update(DatabaseTable.TABLE_HISTORY, values, HISTORY_ID + "= ?", new String[]{String.valueOf(id)});
             db.setTransactionSuccessful();
+            Log.d("Updated Record", "Finished update record");
         } catch (Exception e) {
-            Log.d(TAG, "Error while trying to update record");
+            Log.d("Error Update Record", "Error while trying to update record");
         } finally {
             db.endTransaction();
         }
     }
 
+
+//    public int getUploaded(Context context, int id) {
+//        List<DataModel> users = new ArrayList<>();
+//
+//        String s = String.valueOf(id);
+//
+//        String POSTS_SELECT_QUERY =
+//                String.format("SELECT * FROM "+ DatabaseTable.TABLE_HISTORY +
+//                        " WHERE " + HISTORY_ID + "=" + s );
+//
+//        SQLiteDatabase db = HistoryDatabaseHelper.getInstance(context).getReadableDatabase();
+//        Cursor cursor = db.rawQuery(POSTS_SELECT_QUERY, null);
+//        try {
+//            if (cursor.moveToFirst()) {
+//                do {
+//                    DataModel user = new DataModel();
+//                    user.setId(cursor.getInt(cursor.getColumnIndex(HISTORY_ID)));
+//                    user.setPhoto(cursor.getBlob(cursor.getColumnIndex(HISTORY_PHOTO)));
+//                    user.setChlorophyll(cursor.getFloat(cursor.getColumnIndex(HISTORY_CLOROPHYLL)));
+//                    user.setCarotenoid(cursor.getFloat(cursor.getColumnIndex(HISTORY_CAROTENOID)));
+//                    user.setAnthocyanin(cursor.getFloat(cursor.getColumnIndex(HISTORY_ANTHOCYANIN)));
+//                    user.setDatetime(cursor.getString(cursor.getColumnIndex(HISTORY_DATETIME)));
+//                    user.setFilename(cursor.getString(cursor.getColumnIndex(HISTORY_FILENAME)));
+//                    user.setUploaded(cursor.getInt(cursor.getColumnIndex(HISTORY_UPLOADED)));
+//
+//                    users.add(user);
+//                } while(cursor.moveToNext());
+//            }
+//        } catch (Exception e) {
+//            Log.d(TAG, "Error while trying to get posts from database");
+//        } finally {
+//            if (cursor != null && !cursor.isClosed()) {
+//                cursor.close();
+//            }
+//        }
+//        return users.get(0).getUploaded();
+//    }
 }

@@ -9,12 +9,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.transition.TransitionSet;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.leafpiction.Model.PhotoRequestModel;
 import com.example.leafpiction.R;
+import com.example.leafpiction.UploadTask;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -28,8 +33,8 @@ public class DetailActivity extends AppCompatActivity {
 
     HistoryDatabaseCRUD dbHandler;
 
-    int id;
-    byte[] byteArray;
+    int id, uploaded;
+    byte[] photo;
     float kloro, karo, anto;
 
     @Override
@@ -59,10 +64,26 @@ public class DetailActivity extends AppCompatActivity {
         btn_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar snackbar = Snackbar.make(view, getResources().getString(R.string.inDevelopment), Snackbar.LENGTH_SHORT);
-                ColorStateList colorPrimary = ContextCompat.getColorStateList(view.getContext(), R.color.colorPrimaryDark);
-                snackbar.setBackgroundTintList(colorPrimary);
-                snackbar.show();
+//                Snackbar snackbar = Snackbar.make(view, getResources().getString(R.string.inDevelopment), Snackbar.LENGTH_SHORT);
+//                ColorStateList colorPrimary = ContextCompat.getColorStateList(view.getContext(), R.color.colorPrimaryDark);
+//                snackbar.setBackgroundTintList(colorPrimary);
+//                snackbar.show();
+
+                Log.d("Uploaded Status", String.valueOf(uploaded));
+
+                if(uploaded == 0) {
+                    String encodedImage = Base64.encodeToString(photo, Base64.DEFAULT);
+
+                    PhotoRequestModel request = new PhotoRequestModel(encodedImage, id, kloro, karo, anto);
+                    UploadTask uploadTask = new UploadTask(DetailActivity.this, request);
+                    uploadTask.execute();
+
+                    uploaded = 1;
+                }
+                else{
+                    Toast.makeText(DetailActivity.this, getResources().getString(R.string.uploaded),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -70,13 +91,14 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setView() {
         Bundle extras = getIntent().getExtras();
-        byteArray = extras.getByteArray("photo");
+        photo = extras.getByteArray("photo");
         id = extras.getInt("id");
         kloro = extras.getFloat("cloro");
         karo = extras.getFloat("caro");
         anto = extras.getFloat("anto");
+        uploaded = extras.getInt("uploaded");
 
-        Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
         iv_photo.setImageBitmap(bmp);
 
         tv_cloro.setText("" + new DecimalFormat("###.####").format(kloro));

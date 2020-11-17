@@ -70,6 +70,7 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.CardVi
                     intent.putExtra("cloro", list.get(getAdapterPosition()).getChlorophyll());
                     intent.putExtra("caro", list.get(getAdapterPosition()).getCarotenoid());
                     intent.putExtra("anto", list.get(getAdapterPosition()).getAnthocyanin());
+                    intent.putExtra("uploaded", list.get(getAdapterPosition()).getUploaded());
                     view.getContext().startActivity(intent);
                 }
             });
