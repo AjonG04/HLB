@@ -6,6 +6,12 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -23,6 +29,7 @@ import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,6 +84,13 @@ public class CameraActivity extends AppCompatActivity {
     private Size imageDimension;
     private ImageReader imageReader;
     private Bitmap photo;
+
+    private View greenBoxView;
+    private float RectLeft;
+    private float RectTop;
+    private float RectRight;
+    private float RectBottom;
+    private boolean status = false;
 
 //    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 //    static {
@@ -148,6 +162,9 @@ public class CameraActivity extends AppCompatActivity {
         dbHandler = new HistoryDatabaseCRUD();
         context = getApplicationContext();
 
+        greenBoxView = new Box(this);
+        addContentView(greenBoxView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT));
+
         try{
             tflite = new Interpreter(loadmodelfile(this));
         } catch (Exception e) {
@@ -160,6 +177,61 @@ public class CameraActivity extends AppCompatActivity {
                 takePicture(view);
             }
         });
+    }
+
+    public class Box extends View {
+        Paint paint = null;
+        Canvas temp;
+        Paint p = new Paint();
+        Paint transparentPaint;
+        Paint green=new Paint();
+        Bitmap bitmap;
+
+        int pixels;
+
+        public Box(Context context)
+        {
+            super(context);
+            paint = new Paint();
+            final float scale = getContext().getResources().getDisplayMetrics().density;
+            pixels = (int) (450 * scale + 0.5f);
+            bitmap = Bitmap.createBitmap(getWindow().getWindowManager().getDefaultDisplay().getWidth(),pixels, Bitmap.Config.ARGB_8888);
+            temp = new Canvas(bitmap);
+            paint = new Paint();
+            paint.setColor(Color.parseColor("#75757d8a"));
+            transparentPaint = new Paint();
+            transparentPaint.setColor(getResources().getColor(android.R.color.transparent));
+            transparentPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        }
+
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+
+            green.setStyle(Paint.Style.STROKE);
+            green.setColor(Color.GREEN);
+            green.setStrokeWidth(5);
+
+//            draw guide box
+            RectLeft = getWindow().getWindowManager().getDefaultDisplay().getWidth()/2 - getWindow().getWindowManager().getDefaultDisplay().getWidth()/5*3/2;
+            RectTop = getWindow().getWindowManager().getDefaultDisplay().getWidth()/2 - RectLeft*3/2;
+            RectRight =  getWindow().getWindowManager().getDefaultDisplay().getWidth()/2 + getWindow().getWindowManager().getDefaultDisplay().getWidth()/5*3/2;
+            RectBottom = pixels/2 + RectLeft*3/2;
+
+            if (status == false){
+
+                temp.drawRect(0, 0, temp.getWidth(), temp.getHeight(), paint);
+                temp.drawRect(RectLeft, RectTop, RectRight, RectBottom, transparentPaint);
+                temp.drawCircle(fab.getLeft()+fab.getWidth()/2,fab.getTop()+fab.getHeight()/2,fab.getWidth()/2,transparentPaint);
+
+            }
+            canvas.drawRect(RectLeft, RectTop, RectRight, RectBottom, green);
+            canvas.drawBitmap(bitmap, 0, 0, p);
+            status = true;
+
+
+        }
     }
 
     private void takePicture(View view) {
@@ -359,11 +431,25 @@ public class CameraActivity extends AppCompatActivity {
         outputProbabilityBuffer = TensorBuffer.createFixedSize(probabilityShape, probabilityDataType);
         probabilityProcessor = new TensorProcessor.Builder().add(getPostprocessNormalizeOp()).build();
 
-        inputImageBuffer = loadImage(bitmap);
+        Matrix mat = new Matrix();
+        //PROSES CROPPING
+        photo = Bitmap.createBitmap(bitmap, Math.round(RectLeft), Math.round(RectTop),
+                Math.round(RectRight)-Math.round(RectLeft),
+                Math.round(RectBottom)-Math.round(RectTop), mat, true);
 
-        tflite.run(inputImageBuffer.getBuffer(),outputProbabilityBuffer.getBuffer().rewind());
+//        photo = Bitmap.createScaledBitmap(photo, 34, 34, true);
+        inputImageBuffer = loadImage(photo);
+//        inputImageBuffer = loadImage(bitmap);
 
-        float[] output =  outputProbabilityBuffer.getFloatArray();
+//        tflite.run(inputImageBuffer.getBuffer(),outputProbabilityBuffer.getBuffer().rewind());
+//        float[] output =  outputProbabilityBuffer.getFloatArray();
+
+        float[][] outputs = new float[1][3];;
+        tflite.run(inputImageBuffer.getBuffer(), outputs);
+        float[] output = outputs[0];
+
+        String temp = output[0] + " " + output[1] + " " + output[2];
+        Log.d("Output", temp);
 
         output[0] = output[0] * 892.24595f + 0.0032483f;
         output[1] = output[1] * 211.29755f + 0.0f;
