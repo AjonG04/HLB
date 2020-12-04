@@ -160,9 +160,12 @@ public class GalleryActivity extends AppCompatActivity {
 
         inputImageBuffer = loadImage(bitmap);
 
-        tflite.run(inputImageBuffer.getBuffer(),outputProbabilityBuffer.getBuffer().rewind());
+//        tflite.run(inputImageBuffer.getBuffer(),outputProbabilityBuffer.getBuffer().rewind());
+//        float[] output =  outputProbabilityBuffer.getFloatArray();
 
-        float[] output =  outputProbabilityBuffer.getFloatArray();
+        float[][] outputs = new float[1][3];;
+        tflite.run(inputImageBuffer.getBuffer(), outputs);
+        float[] output = outputs[0];
 
         output[0] = output[0] * 892.24595f + 0.0032483f;
         output[1] = output[1] * 211.29755f + 0.0f;
@@ -179,12 +182,19 @@ public class GalleryActivity extends AppCompatActivity {
         int cropSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
 
         // TODO(b/143564309): Fuse ops inside ImageProcessor.
+//        ImageProcessor imageProcessor =
+//                new ImageProcessor.Builder()
+//                        .add(new ResizeWithCropOrPadOp(cropSize, cropSize))
+//                        .add(new ResizeOp(imageSizeX, imageSizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
+//                        .add(getPreprocessNormalizeOp())
+//                        .build();
+
         ImageProcessor imageProcessor =
                 new ImageProcessor.Builder()
-                        .add(new ResizeWithCropOrPadOp(cropSize, cropSize))
                         .add(new ResizeOp(imageSizeX, imageSizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
                         .add(getPreprocessNormalizeOp())
                         .build();
+
         return imageProcessor.process(inputImageBuffer);
     }
 

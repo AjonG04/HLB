@@ -14,30 +14,30 @@
 
         <ImageView
             android:id="@+id/iv_photo"
-            android:layout_margin="30dp"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:src="@color/cardview_dark_background"
+            android:layout_margin="20dp"
             android:layout_gravity="center_horizontal"
+            android:elevation="5dp"
             />
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/detailTitle"
+            android:textAllCaps="false"
+            android:textColor="#5B5B5C"
+            android:letterSpacing="0.1"
+            android:fontFamily="@font/sourcesansprobold"
+            android:textSize="25sp"
+            android:layout_marginTop="10sp"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/detailTitle"
-                android:textAllCaps="true"
-                android:textColor="@color/black"
-                android:letterSpacing="0.1"
-                android:fontFamily="@font/sourcesansprobold"
-                android:textSize="25dp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,8 +46,8 @@
             android:padding="16dp">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginRight="10dp"
                 android:src="@drawable/klorofilimg" />
 
@@ -59,9 +59,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/sourcesansprobold"
+                    android:fontFamily="@font/sourcesansproregular"
+                    android:letterSpacing="0.1"
                     android:text="@string/clorophyll"
-                    android:textSize="20dp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -72,9 +73,10 @@
                         android:id="@+id/textkloro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/sourcesansproregular"
+                        android:fontFamily="@font/sourcesansprobold"
+                        android:textColor="@color/black"
                         android:text="0.0321"
-                        android:textSize="20dp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         />
 
@@ -83,14 +85,20 @@
                         android:layout_height="wrap_content"
                         android:text=" μg/g"
                         android:fontFamily="@font/sourcesansproregular"
-                        android:textSize="20dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         />
 
                 </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,8 +107,8 @@
             android:padding="16dp">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginRight="10dp"
                 android:src="@drawable/karotenoidimg" />
 
@@ -112,9 +120,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/sourcesansprobold"
+                    android:fontFamily="@font/sourcesansproregular"
+                    android:letterSpacing="0.1"
                     android:text="@string/carotenoid"
-                    android:textSize="20dp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -125,9 +134,10 @@
                         android:id="@+id/textkaro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/sourcesansproregular"
+                        android:fontFamily="@font/sourcesansprobold"
                         android:text="0.0321"
-                        android:textSize="20dp"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
                         android:textStyle="bold" />
 
                     <TextView
@@ -135,15 +145,20 @@
                         android:layout_height="wrap_content"
                         android:text=" μg/g"
                         android:fontFamily="@font/sourcesansproregular"
-                        android:textSize="20dp"
+                        android:textSize="20sp"
+                        android:textColor="@color/black"
                         android:textStyle="bold"
                         />
 
                 </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -151,8 +166,8 @@
             android:padding="16dp">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginRight="10dp"
                 android:src="@drawable/antoimg" />
 
@@ -164,9 +179,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/sourcesansprobold"
+                    android:fontFamily="@font/sourcesansproregular"
+                    android:letterSpacing="0.1"
                     android:text="@string/antocyanin"
-                    android:textSize="20dp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -177,9 +193,10 @@
                         android:id="@+id/textanto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/sourcesansproregular"
+                        android:fontFamily="@font/sourcesansprobold"
+                        android:textColor="@color/black"
                         android:text="0.0321"
-                        android:textSize="20dp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -187,22 +204,25 @@
                         android:layout_height="wrap_content"
                         android:text=" μg/g"
                         android:fontFamily="@font/sourcesansproregular"
-                        android:textSize="20dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         />
 
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <Button
             android:id="@+id/btn_upload"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
             android:text="@string/upload"
+            android:padding="12dp"
             android:fontFamily="@font/sourcesansprobold"
             android:backgroundTint="@color/design_default_color_secondary_variant"
             />
@@ -211,11 +231,12 @@
             android:id="@+id/btn_delete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="20dp"
             android:text="@string/delete"
+            android:padding="12dp"
             android:fontFamily="@font/sourcesansprobold"
             android:backgroundTint="@color/design_default_color_error"
             />
