@@ -20,7 +20,6 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -30,9 +29,9 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.leafpiction.Fragments.BottomCameraFragment;
 import com.example.leafpiction.Model.DataModel;
 import com.example.leafpiction.R;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
@@ -41,17 +40,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
-import org.tensorflow.lite.support.common.TensorOperator;
-import org.tensorflow.lite.support.common.TensorProcessor;
-import org.tensorflow.lite.support.common.ops.NormalizeOp;
-import org.tensorflow.lite.support.image.ImageProcessor;
-import org.tensorflow.lite.support.image.TensorImage;
-import org.tensorflow.lite.support.image.ops.ResizeOp;
-import org.tensorflow.lite.support.image.ops.ResizeWithCropOrPadOp;
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
@@ -65,6 +55,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import static android.content.ContentValues.TAG;
 
@@ -73,16 +64,16 @@ public class CameraActivity extends AppCompatActivity {
     private CameraDevice cameraDevice;
     private TextureView textureView;
     private FloatingActionButton fab;
-    private TextView kloro ;
-    private TextView karo ;
-    private TextView anto ;
+//    private TextView kloro ;
+//    private TextView karo ;
+//    private TextView anto ;
 
     private String cameraId;
     private CameraCaptureSession cameraCaptureSession;
     private CaptureRequest.Builder captureRequestBuilder;
     private Size[] allimageDimension;
     private Size imageDimension;
-    private ImageReader imageReader;
+//    private ImageReader imageReader;
     private Bitmap photo;
 
     private View greenBoxView;
@@ -101,30 +92,32 @@ public class CameraActivity extends AppCompatActivity {
 //    }
 
     //savefile
-    private File file;
+//    private File file;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
-    private ImageReader mImageReader;
+//    private ImageReader mImageReader;
 
     private int a = 0;
 
     protected Interpreter tflite;
-    private MappedByteBuffer tfliteModel;
-    private TensorImage inputImageBuffer;
+//    private MappedByteBuffer tfliteModel;
+//    private TensorImage inputImageBuffer;
     private  int imageSizeX;
     private  int imageSizeY;
-    private TensorBuffer outputProbabilityBuffer;
-    private TensorProcessor probabilityProcessor;
-    private static final float IMAGE_MEAN = 0.0f;
-    private static final float IMAGE_STD = 255.0f;
-    private static final float PROBABILITY_MEAN = 0.0f;
-    private static final float PROBABILITY_STD = 1.0f;
+//    private TensorBuffer outputProbabilityBuffer;
+//    private TensorProcessor probabilityProcessor;
+//    private static final float IMAGE_MEAN = 0.0f;
+//    private static final float IMAGE_STD = 255.0f;
+//    private static final float PROBABILITY_MEAN = 0.0f;
+//    private static final float PROBABILITY_STD = 1.0f;
     private Bitmap bitmap;
 
     HistoryDatabaseCRUD dbHandler;
     Context context;
+    Fragment Bottom_Camera;
+    BottomCameraFragment bot_camera = new BottomCameraFragment();
 
     CameraDevice.StateCallback stateCallBack = new CameraDevice.StateCallback() {
         @Override
@@ -153,9 +146,12 @@ public class CameraActivity extends AppCompatActivity {
         textureView = (TextureView)findViewById(R.id.textureview);
         textureView.setSurfaceTextureListener(textureListener);
 
-        kloro = ((TextView)findViewById(R.id.textkloro));
-        karo = ((TextView)findViewById(R.id.textkaro));
-        anto = ((TextView)findViewById(R.id.textanto));
+        Bottom_Camera = new BottomCameraFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_bottom_camera, Bottom_Camera).commit();
+
+//        kloro = ((TextView)findViewById(R.id.textkloro));
+//        karo = ((TextView)findViewById(R.id.textkaro));
+//        anto = ((TextView)findViewById(R.id.textanto));
 
         fab = (FloatingActionButton)findViewById(R.id.fab_take_photo);
 
@@ -406,9 +402,9 @@ public class CameraActivity extends AppCompatActivity {
 
                 float[] output =  doInference(bitmap);
 
-                kloro.setText(""+new DecimalFormat("###.####").format(output[0]));
-                karo.setText(""+new DecimalFormat("###.####").format(output[1]));
-                anto.setText(""+new DecimalFormat("###.####").format(output[2]));
+                bot_camera.setCloro(""+new DecimalFormat("###.####").format(output[0]));
+                bot_camera.setCaro(""+new DecimalFormat("###.####").format(output[1]));
+                bot_camera.setAnto(""+new DecimalFormat("###.####").format(output[2]));
             }
         }
     };
@@ -421,35 +417,89 @@ public class CameraActivity extends AppCompatActivity {
         imageSizeX = imageShape[2];
         DataType imageDataType = tflite.getInputTensor(imageTensorIndex).dataType();
 
-        int probabilityTensorIndex = 0;
-        int[] probabilityShape =
-                tflite.getOutputTensor(probabilityTensorIndex).shape(); // {1, NUM_CLASSES}
-
-        DataType probabilityDataType = tflite.getOutputTensor(probabilityTensorIndex).dataType();
-
-        inputImageBuffer = new TensorImage(imageDataType);
-        outputProbabilityBuffer = TensorBuffer.createFixedSize(probabilityShape, probabilityDataType);
-        probabilityProcessor = new TensorProcessor.Builder().add(getPostprocessNormalizeOp()).build();
+//        int probabilityTensorIndex = 0;
+//        int[] probabilityShape =
+//                tflite.getOutputTensor(probabilityTensorIndex).shape(); // {1, NUM_CLASSES}
+//
+//        DataType probabilityDataType = tflite.getOutputTensor(probabilityTensorIndex).dataType();
+//
+//        inputImageBuffer = new TensorImage(imageDataType);
+//        outputProbabilityBuffer = TensorBuffer.createFixedSize(probabilityShape, probabilityDataType);
+//        probabilityProcessor = new TensorProcessor.Builder().add(getPostprocessNormalizeOp()).build();
 
         Matrix mat = new Matrix();
         //PROSES CROPPING
         photo = Bitmap.createBitmap(bitmap, Math.round(RectLeft), Math.round(RectTop),
                 Math.round(RectRight)-Math.round(RectLeft),
                 Math.round(RectBottom)-Math.round(RectTop), mat, true);
-
+        bitmap = Bitmap.createScaledBitmap(photo, 54, 54, true);
 //        photo = Bitmap.createScaledBitmap(photo, 34, 34, true);
-        inputImageBuffer = loadImage(photo);
+//        inputImageBuffer = loadImage(photo);
 //        inputImageBuffer = loadImage(bitmap);
 
 //        tflite.run(inputImageBuffer.getBuffer(),outputProbabilityBuffer.getBuffer().rewind());
 //        float[] output =  outputProbabilityBuffer.getFloatArray();
 
-        float[][] outputs = new float[1][3];;
-        tflite.run(inputImageBuffer.getBuffer(), outputs);
+//        float[][] outputs = new float[1][3];;
+//        tflite.run(inputImageBuffer.getBuffer(), outputs);
+//        float[] output = outputs[0];
+//
+//        String temp = output[0] + " " + output[1] + " " + output[2];
+//        Log.d("Output", temp);
+//
+//        output[0] = output[0] * 892.24595f + 0.0032483f;
+//        output[1] = output[1] * 211.29755f + 0.0f;
+//        output[2] = output[2] * 345.45058f + 0.0f;
+
+        int x = 54;
+        int y = 54;
+        int componentsPerPixel = 3;
+        int totalPixels = x * y;
+
+        int[] argbPixels = new int[totalPixels];
+        float[][][][] rgbValuesFinal = new float[1][x][y][componentsPerPixel];
+
+        bitmap.getPixels(argbPixels, 0, x, 0, 0, x, y);
+
+        double[][] reds = new double[54][54];
+        double[][] greens = new double[54][54];
+        double[][] blues = new double[54][54];
+
+        int pos;
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                int argbPixel = bitmap.getPixel(i, j);
+                int blue = Color.red(argbPixel);
+                int green = Color.green(argbPixel);
+                int red = Color.blue(argbPixel);
+                rgbValuesFinal[0][i][j][0] = (float) (red/255.0);
+                rgbValuesFinal[0][i][j][1] = (float) (green/255.0);
+                rgbValuesFinal[0][i][j][2] = (float) (blue/255.0);
+                reds[i][j] = red;
+                greens[i][j] = green;
+                blues[i][j] = blue;
+            }
+        }
+
+        int pixpos = 30;
+        String temp3 = " " + reds[pixpos][pixpos] + " "
+                + greens[pixpos][pixpos] + " "
+                + blues[pixpos][pixpos];
+        Log.d("Trial - RGB", temp3);
+
+        String temp2 = " " + rgbValuesFinal[0][pixpos][pixpos][0] + " "
+                + rgbValuesFinal[0][pixpos][pixpos][1] + " "
+                + rgbValuesFinal[0][pixpos][pixpos][2];
+        Log.d("Trial - RGB2", temp2);
+
+        float[][] outputs = new float[1][3];
+
+        tflite.run(rgbValuesFinal, outputs);
+
         float[] output = outputs[0];
 
-        String temp = output[0] + " " + output[1] + " " + output[2];
-        Log.d("Output", temp);
+        String temp = " " +  output[0] + " " + output[1] + " " + output[2];
+        Log.d("Trial - Output", temp);
 
         output[0] = output[0] * 892.24595f + 0.0032483f;
         output[1] = output[1] * 211.29755f + 0.0f;
@@ -492,28 +542,28 @@ public class CameraActivity extends AppCompatActivity {
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
     }
 
-    private TensorImage loadImage(final Bitmap bitmap) {
-        // Loads bitmap into a TensorImage.
-        inputImageBuffer.load(bitmap);
-
-        // Creates processor for the TensorImage.
-        int cropSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
-
-        // TODO(b/143564309): Fuse ops inside ImageProcessor.
+//    private TensorImage loadImage(final Bitmap bitmap) {
+//        // Loads bitmap into a TensorImage.
+//        inputImageBuffer.load(bitmap);
+//
+//        // Creates processor for the TensorImage.
+//        int cropSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
+//
+//        // TODO(b/143564309): Fuse ops inside ImageProcessor.
+////        ImageProcessor imageProcessor =
+////                new ImageProcessor.Builder()
+////                        .add(new ResizeWithCropOrPadOp(cropSize, cropSize))
+////                        .add(new ResizeOp(imageSizeX, imageSizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
+////                        .add(getPreprocessNormalizeOp())
+////                        .build();
+//
 //        ImageProcessor imageProcessor =
 //                new ImageProcessor.Builder()
-//                        .add(new ResizeWithCropOrPadOp(cropSize, cropSize))
 //                        .add(new ResizeOp(imageSizeX, imageSizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
 //                        .add(getPreprocessNormalizeOp())
 //                        .build();
-
-        ImageProcessor imageProcessor =
-                new ImageProcessor.Builder()
-                        .add(new ResizeOp(imageSizeX, imageSizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
-                        .add(getPreprocessNormalizeOp())
-                        .build();
-        return imageProcessor.process(inputImageBuffer);
-    }
+//        return imageProcessor.process(inputImageBuffer);
+//    }
 
     private MappedByteBuffer loadmodelfile(Activity activity) throws IOException {
         AssetFileDescriptor fileDescriptor=activity.getAssets().openFd("P3Net.tflite");
@@ -524,11 +574,11 @@ public class CameraActivity extends AppCompatActivity {
         return fileChannel.map(FileChannel.MapMode.READ_ONLY,startoffset,declaredLength);
     }
 
-    private TensorOperator getPreprocessNormalizeOp() {
-        return new NormalizeOp(IMAGE_MEAN, IMAGE_STD);
-    }
-    private TensorOperator getPostprocessNormalizeOp(){
-        return new NormalizeOp(PROBABILITY_MEAN, PROBABILITY_STD);
-    }
+//    private TensorOperator getPreprocessNormalizeOp() {
+//        return new NormalizeOp(IMAGE_MEAN, IMAGE_STD);
+//    }
+//    private TensorOperator getPostprocessNormalizeOp(){
+//        return new NormalizeOp(PROBABILITY_MEAN, PROBABILITY_STD);
+//    }
 
 }

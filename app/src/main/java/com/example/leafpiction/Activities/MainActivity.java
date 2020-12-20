@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
             Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
 
             loadGalleryActivity(scaled);
+//            loadGalleryActivity(bitmap);
 
         }
     }
