@@ -47,4 +47,14 @@
     <string name="appDesc">Aplikasi Leaf Piction berguna untuk memprediksi kandungan pigmen pada daun. Pigmen yang dapat diprediksi adalah Klorofil, Karotenoid, dan Antosianin.</string>
     <string name="developer">Pengembang</string>
     <string name="univ">Universitas Ma Chung</string>
+
+    <!-- String for fragment Help  -->
+    <string name="help_title_1">Prediksi Pigmen dengan Kamera</string>
+    <string name="help_desc_1">Tekan Tombol Ambil Foto untuk melakukan Prediksi Pigmen Langsung. Harap letakkan daun di atas latar belakang putih seperti kertas. Arahkan kamera ponsel Anda ke daun, pastikan daun berada di dalam kotak hijau. Aplikasi akan menampilkan prediksi.</string>
+    <string name="help_title_2">Prediksi Pigmen dari Galeri</string>
+    <string name="help_desc_2">Tekan Tombol Tambah Gambar dari Galeri untuk memprediksi pigmen dari foto daun. Harap potong foto agar tidak memiliki latar belakang yang berlebihan.</string>
+    <string name="help_title_3">Unggah Gambar ke Server</string>
+    <string name="help_desc_3">Tekan Tombol Unggah untuk mengirim gambar Anda ke bank data kami. Kontribusi Anda akan sangat dihargai. Kami akan menggunakannya untuk melanjutkan penelitian kami.</string>
+    <string name="next">Lanjut</string>
+    <string name="prev">Kembali</string>
 </resources>

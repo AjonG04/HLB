@@ -46,4 +46,14 @@
     <string name="appDesc">Leaf Piction Application can be used to predict the amount of pigment in a leaf. The pigments that can be recognized are Chlorophyll, Carotenoid, and Antocyanin.</string>
     <string name="developer">Developer</string>
     <string name="univ">Ma Chung University</string>
+
+    <!-- String for fragment Help  -->
+    <string name="help_title_1">Live Pigment Prediction</string>
+    <string name="help_desc_1">Click Button Take Photo to do a Live Pigment Prediction. Please put the leaf on top of a white background such as paper. Direct your phone camera to the leaf, make sure the leaf is inside the green square. Application will show the prediction.</string>
+    <string name="help_title_2">Pigment Prediction from Gallery</string>
+    <string name="help_desc_2">Click Button Add Image from Gallery to predict the amount of pigments in the photo of the leaf. Please crop the photo from having excessive background.</string>
+    <string name="help_title_3">Upload Image to Server</string>
+    <string name="help_desc_3">Click Button Upload to send your image to our data bank. Your contribution will be greatly appreciated. We will use it to further our study.</string>
+    <string name="next">Next</string>
+    <string name="prev">Prev</string>
 </resources>
