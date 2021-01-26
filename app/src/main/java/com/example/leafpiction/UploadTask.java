@@ -53,7 +53,6 @@ public class UploadTask {
             public void onResponse(JSONObject response) {
                 String responseString = Tools.fix(response).toString();
                 PhotoResponseModel responseModel = new Gson().fromJson(responseString, PhotoResponseModel.class);
-
                 String code = responseModel.getCode();
 
                 if(SUCCESS_RESPONSE_CODE.equalsIgnoreCase(code)) {
@@ -72,7 +71,6 @@ public class UploadTask {
                 public void onErrorResponse(VolleyError error) {
                     Toast.makeText(activity, "Error Uploading", Toast.LENGTH_SHORT).show();
                     VolleyLog.e("Error: ", error.getMessage());
-                    progressDialog.dismiss();
                 }
             }
         );

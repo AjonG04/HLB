@@ -89,7 +89,7 @@
             android:lineSpacingExtra="12sp"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
-            android:text="Kestrilia Rega Prilianti, M.Si."
+            android:text="Dr. Kestrilia Rega Prilianti, M.Si."
             android:textColor="@color/black"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"

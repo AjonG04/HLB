@@ -35,6 +35,7 @@ import com.example.leafpiction.Fragments.BottomCameraFragment;
 import com.example.leafpiction.Model.DataModel;
 import com.example.leafpiction.R;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -153,7 +154,7 @@ public class CameraActivity extends AppCompatActivity {
 //        karo = ((TextView)findViewById(R.id.textkaro));
 //        anto = ((TextView)findViewById(R.id.textanto));
 
-        fab = (FloatingActionButton)findViewById(R.id.fab_take_photo);
+        fab = findViewById(R.id.fab_take_photo);
 
         dbHandler = new HistoryDatabaseCRUD();
         context = getApplicationContext();
