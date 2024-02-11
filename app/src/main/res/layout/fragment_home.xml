@@ -10,37 +10,66 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_camera"
+        <LinearLayout
+            android:id="@+id/btnGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="loadCameraActivity"
-            android:text="@string/take_photo"
-            android:padding="10dp"
-            app:icon="@drawable/ic_baseline_photo_camera"
-            android:fontFamily="@font/sourcesansprobold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.434"
-            tools:ignore="OnClick" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="getImage"
-            android:text="@string/gallery"
-            app:icon="@drawable/ic_baseline_insert_photo_24"
-            android:padding="10dp"
-            android:fontFamily="@font/sourcesansprobold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_camera"
-            app:layout_constraintVertical_bias="0.191"
-            tools:ignore="OnClick" />
+            >
+
+            <ImageButton
+                android:id="@+id/btn_camera"
+                android:layout_width="300dp"
+                android:layout_height="150dp"
+                android:background="@drawable/capture_brn"
+                android:clickable="true"
+                android:onClick="loadCameraActivity"
+                android:layout_margin="10dp"
+                tools:ignore="onClick"
+                android:contentDescription="@string/cam_desc"
+                />
+
+            <ImageButton
+                android:id="@+id/btn_gallery"
+                android:layout_width="300dp"
+                android:layout_height="150dp"
+                android:background="@drawable/upload_brn"
+                android:onClick="getImage"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                tools:ignore="onClick"
+                android:contentDescription="@string/gal_desc"
+                />
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/btn_camera"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:onClick="loadCameraActivity"-->
+<!--                android:text="@string/take_photo"-->
+<!--                android:padding="10dp"-->
+<!--                app:icon="@drawable/ic_baseline_photo_camera"-->
+<!--                android:fontFamily="@font/sourcesansprobold"-->
+<!--                tools:ignore="OnClick" />-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/btn_gallery"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:onClick="getImage"-->
+<!--                android:text="@string/gallery"-->
+<!--                app:icon="@drawable/ic_baseline_insert_photo_24"-->
+<!--                android:padding="10dp"-->
+<!--                android:fontFamily="@font/sourcesansprobold"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/btn_camera"-->
+<!--                tools:ignore="OnClick" />-->
+        </LinearLayout>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

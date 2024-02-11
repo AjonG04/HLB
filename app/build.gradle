@@ -1,16 +1,21 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 32
     buildToolsVersion "29.0.2"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         applicationId "com.example.leafpiction"
         minSdkVersion 24
-        targetSdkVersion 29
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
-
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -24,6 +29,9 @@ android {
     aaptOptions {
         noCompress "tflite", "lite"
     }
+    buildFeatures {
+        mlModelBinding true
+    }
 
 }
 
@@ -32,7 +40,12 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.squareup.okhttp3:okhttp:4.2.1'
+    implementation 'com.github.mckrpk:AnimatedProgressBar:0.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.3.0'
 //    implementation 'androidx.wear:wear:1.0.0'
 
     testImplementation 'junit:junit:4.12'
@@ -41,6 +54,8 @@ dependencies {
 
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
+//    implementation 'org.tensorflow:tensorflow-lite-task-vision-play-services:0.4.2'
+//    implementation 'com.google.android.gms:play-services-tflite-gpu:16.1.0'
 
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -49,8 +64,8 @@ dependencies {
 
     api "com.google.android.material:material:1.3.0-alpha01"
 
-    implementation('org.tensorflow:tensorflow-lite:0.0.0-nightly') { changing = true }
-    implementation('org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly') { changing = true }
-    implementation('org.tensorflow:tensorflow-lite-support:0.0.0-nightly') { changing = true }
+//    implementation('org.tensorflow:tensorflow-lite:0.0.0-nightly') { changing = true }
+//    implementation('org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly') { changing = true }
+//    implementation('org.tensorflow:tensorflow-lite-support:0.0.0-nightly') { changing = true }
 //    compileOnly 'com.google.android.wearable:wearable:2.5.0'
 }

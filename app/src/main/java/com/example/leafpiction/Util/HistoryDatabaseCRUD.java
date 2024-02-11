@@ -1,5 +1,6 @@
 package com.example.leafpiction.Util;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,9 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
-import static com.example.leafpiction.Util.DatabaseTable.HISTORY_ANTHOCYANIN;
-import static com.example.leafpiction.Util.DatabaseTable.HISTORY_CAROTENOID;
-import static com.example.leafpiction.Util.DatabaseTable.HISTORY_CLOROPHYLL;
+import static com.example.leafpiction.Util.DatabaseTable.HISTORY_CONFIDENCE;
+import static com.example.leafpiction.Util.DatabaseTable.HISTORY_STATUS;
 import static com.example.leafpiction.Util.DatabaseTable.HISTORY_DATETIME;
 import static com.example.leafpiction.Util.DatabaseTable.HISTORY_FILENAME;
 import static com.example.leafpiction.Util.DatabaseTable.HISTORY_ID;
@@ -35,9 +35,8 @@ public class HistoryDatabaseCRUD {
             ContentValues values = new ContentValues();
 //            values.put(HISTORY_ID, dataModel.getId());
             values.put(HISTORY_PHOTO, dataModel.getPhoto());
-            values.put(HISTORY_CLOROPHYLL, dataModel.getChlorophyll());
-            values.put(HISTORY_CAROTENOID, dataModel.getCarotenoid());
-            values.put(HISTORY_ANTHOCYANIN, dataModel.getAnthocyanin());
+            values.put(HISTORY_STATUS, dataModel.getStatus());
+            values.put(HISTORY_CONFIDENCE, dataModel.getConfidence());
             values.put(HISTORY_DATETIME, dataModel.getDatetime());
             values.put(HISTORY_FILENAME, dataModel.getFilename());
             values.put(HISTORY_UPLOADED, dataModel.getUploaded());
@@ -52,6 +51,7 @@ public class HistoryDatabaseCRUD {
         }
     }
 
+    @SuppressLint("Range")
     public List<DataModel> getAllRecords(Context context) {
         List<DataModel> users = new ArrayList<>();
 
@@ -72,9 +72,8 @@ public class HistoryDatabaseCRUD {
                     DataModel newUser = new DataModel();
                     newUser.setId(cursor.getInt(cursor.getColumnIndex(HISTORY_ID)));
                     newUser.setPhoto(cursor.getBlob(cursor.getColumnIndex(HISTORY_PHOTO)));
-                    newUser.setChlorophyll(cursor.getFloat(cursor.getColumnIndex(HISTORY_CLOROPHYLL)));
-                    newUser.setCarotenoid(cursor.getFloat(cursor.getColumnIndex(HISTORY_CAROTENOID)));
-                    newUser.setAnthocyanin(cursor.getFloat(cursor.getColumnIndex(HISTORY_ANTHOCYANIN)));
+                    newUser.setStatus(cursor.getString(cursor.getColumnIndex(HISTORY_STATUS)));
+                    newUser.setConfidence(cursor.getString(cursor.getColumnIndex(HISTORY_CONFIDENCE)));
                     newUser.setDatetime(cursor.getString(cursor.getColumnIndex(HISTORY_DATETIME)));
                     newUser.setFilename(cursor.getString(cursor.getColumnIndex(HISTORY_FILENAME)));
                     newUser.setUploaded(cursor.getInt(cursor.getColumnIndex(HISTORY_UPLOADED)));

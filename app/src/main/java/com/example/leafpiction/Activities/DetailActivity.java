@@ -1,41 +1,51 @@
 package com.example.leafpiction.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import static android.content.ContentValues.TAG;
 
-import android.content.Intent;
-import android.content.res.ColorStateList;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.transition.TransitionSet;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.leafpiction.Model.PhotoRequestModel;
+import com.example.leafpiction.Model.DataModel;
 import com.example.leafpiction.R;
-import com.example.leafpiction.UploadTask;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.text.DecimalFormat;
+import org.tensorflow.lite.DataType;
+import org.tensorflow.lite.Interpreter;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity {
 
     ImageView iv_photo;
-    TextView tv_cloro, tv_caro, tv_anto;
-    Button btn_delete, btn_upload;
+    TextView tv_caro, tv_anto;
+    ImageButton btn_delete, btn_save;
+
+    protected Interpreter tflite;
 
     HistoryDatabaseCRUD dbHandler;
 
     int id, uploaded;
     byte[] photo;
-    float kloro, karo, anto;
+    String kloro, karo, anto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +53,16 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         iv_photo = findViewById(R.id.iv_photo);
-        tv_cloro = findViewById(R.id.textkloro);
-        tv_anto = findViewById(R.id.textanto);
-        tv_caro = findViewById(R.id.textkaro);
-        btn_delete = findViewById(R.id.btn_delete);
-        btn_upload = findViewById(R.id.btn_upload);
+        tv_anto = findViewById(R.id.textconfidence);
+        tv_caro = findViewById(R.id.textstatus);
+        btn_save = findViewById(R.id.btn_save);
+        btn_delete = findViewById(R.id.btn_hapus);
+
+        try{
+            tflite = new Interpreter(loadmodelfile(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         setView();
 
@@ -61,49 +76,30 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        btn_upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                Snackbar snackbar = Snackbar.make(view, getResources().getString(R.string.inDevelopment), Snackbar.LENGTH_SHORT);
-//                ColorStateList colorPrimary = ContextCompat.getColorStateList(view.getContext(), R.color.colorPrimaryDark);
-//                snackbar.setBackgroundTintList(colorPrimary);
-//                snackbar.show();
-
-                Log.d("Uploaded Status", String.valueOf(uploaded));
-
-                if(uploaded == 0) {
-                    String encodedImage = Base64.encodeToString(photo, Base64.DEFAULT);
-
-                    PhotoRequestModel request = new PhotoRequestModel(encodedImage, id, kloro, karo, anto);
-                    UploadTask uploadTask = new UploadTask(DetailActivity.this, request);
-                    uploadTask.execute();
-
-                    uploaded = 1;
-                }
-                else{
-                    Toast.makeText(DetailActivity.this, getResources().getString(R.string.uploaded),
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
     }
-
     private void setView() {
         Bundle extras = getIntent().getExtras();
         photo = extras.getByteArray("photo");
         id = extras.getInt("id");
-        kloro = extras.getFloat("cloro");
-        karo = extras.getFloat("caro");
-        anto = extras.getFloat("anto");
+        kloro = extras.getString("cloro");
+        karo = extras.getString("caro");
+        anto = extras.getString("anto");
         uploaded = extras.getInt("uploaded");
 
         Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
         iv_photo.setImageBitmap(bmp);
 
-        tv_cloro.setText("" + new DecimalFormat("###.####").format(kloro));
-        tv_anto.setText("" + new DecimalFormat("###.####").format(anto));
-        tv_caro.setText("" + new DecimalFormat("###.####").format(karo));
+        tv_anto.setText("" + anto);
+        tv_caro.setText("" + karo);
+    }
+
+    private MappedByteBuffer loadmodelfile(Activity activity) throws IOException {
+        AssetFileDescriptor fileDescriptor=activity.getAssets().openFd("SqueezeNet_Adamax.tflite");
+        FileInputStream inputStream=new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel=inputStream.getChannel();
+        long startoffset = fileDescriptor.getStartOffset();
+        long declaredLength=fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY,startoffset,declaredLength);
     }
 
 }

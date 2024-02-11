@@ -1,7 +1,7 @@
 package com.example.leafpiction.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.ColorUtils;
+import androidx.core.util.Pair;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,36 +9,30 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.leafpiction.Model.DataModel;
 import com.example.leafpiction.R;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
+import com.example.leafpiction.ml.SqueezenetAdamaxv2;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
-import org.tensorflow.lite.support.common.TensorOperator;
-import org.tensorflow.lite.support.common.TensorProcessor;
-import org.tensorflow.lite.support.common.ops.NormalizeOp;
-import org.tensorflow.lite.support.image.ImageProcessor;
 import org.tensorflow.lite.support.image.TensorImage;
-import org.tensorflow.lite.support.image.ops.ResizeOp;
-import org.tensorflow.lite.support.image.ops.ResizeWithCropOrPadOp;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
@@ -46,13 +40,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+
+
 import static android.content.ContentValues.TAG;
 
 public class GalleryActivity extends AppCompatActivity {
 
     ImageView iv_photo;
     TextView tv_cloro, tv_caro, tv_anto;
-    Button btn_save;
+    ImageButton btn_save;
 
     HistoryDatabaseCRUD dbHandler;
     Context context;
@@ -69,19 +65,23 @@ public class GalleryActivity extends AppCompatActivity {
     private static final float PROBABILITY_MEAN = 0.0f;
     private static final float PROBABILITY_STD = 1.0f;
 
-    float[] output;
+    Pair test;
+    String[] output;
     byte[] photo;
     Bitmap bmp;
+    int imageSize1 = 656;
+    int imageSize2 = 456;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
+
         iv_photo = findViewById(R.id.iv_photo);
-        tv_cloro = findViewById(R.id.textkloro);
-        tv_anto = findViewById(R.id.textanto);
-        tv_caro = findViewById(R.id.textkaro);
+//        tv_cloro = findViewById(R.id.textkloro);
+        tv_anto = findViewById(R.id.textconfidence);
+        tv_caro = findViewById(R.id.textstatus);
         btn_save = findViewById(R.id.btn_save);
 
         dbHandler = new HistoryDatabaseCRUD();
@@ -108,18 +108,21 @@ public class GalleryActivity extends AppCompatActivity {
         bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
         iv_photo.setImageBitmap(bmp);
 
-        output =  doInference(bmp);
+        test = classifyImage(bmp);
 
-        tv_cloro.setText("" + new DecimalFormat("###.####").format(output[0]));
-        tv_caro.setText("" + new DecimalFormat("###.####").format(output[1]));
-        tv_anto.setText("" + new DecimalFormat("###.####").format(output[2]));
+//        output =  doInference(bmp);
+        String status = test.first.toString();
+        String confidence = test.second.toString();
+//        tv_cloro.setText("" + status);
+        tv_caro.setText("" + confidence + "%");
+        tv_anto.setText("" + status);
     }
 
     private void saveData(View view) {
 
-        float chlorophyll = output[0];
-        float carotenoid = output[1];
-        float anthocyanin = output[2];
+        String status = test.first.toString();
+        String confidence = test.second.toString();
+
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -130,7 +133,7 @@ public class GalleryActivity extends AppCompatActivity {
 
         String filename = "Image_" + timeStamp;
 
-        DataModel dataModel = new DataModel(photo, chlorophyll, carotenoid, anthocyanin, datetime, filename, 0);
+        DataModel dataModel = new DataModel(photo, status, confidence + "%", datetime, filename, 0);
 
         String text;
 
@@ -146,7 +149,61 @@ public class GalleryActivity extends AppCompatActivity {
         snackbar.show();
     }
 
-    private float[] doInference(Bitmap bitmap){
+
+    public Pair classifyImage(Bitmap image){
+        String result = "";
+        float maxConfidence = 0;
+        Bitmap input = Bitmap.createScaledBitmap(image, 456, 656, true);
+
+        try {
+            SqueezenetAdamaxv2 model = SqueezenetAdamaxv2.newInstance(getApplicationContext());
+
+            // Creates inputs for reference.
+            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 656, 456, 3}, DataType.FLOAT32);
+            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize1 * imageSize2 * 3);
+            byteBuffer.order(ByteOrder.nativeOrder());
+
+            int[] intValues = new int[imageSize1 * imageSize2];
+            input.getPixels(intValues, 0, input.getWidth(), 0, 0, input.getWidth(), input.getHeight());
+            int pixel = 0;
+            //iterate over each pixel and extract R, G, and B values. Add those values individually to the byte buffer.
+            for(int i = 0; i < imageSize1; i ++){
+                for(int j = 0; j < imageSize2; j++){
+                    int val = intValues[pixel++]; // RGB
+                    byteBuffer.putFloat(((val >> 16) & 0xFF) * (1.f / 1));
+                    byteBuffer.putFloat(((val >> 8) & 0xFF) * (1.f / 1));
+                    byteBuffer.putFloat((val & 0xFF) * (1.f / 1));
+                }
+            }
+
+            inputFeature0.loadBuffer(byteBuffer);
+
+            // Runs model inference and gets result.
+            SqueezenetAdamaxv2.Outputs outputs = model.process(inputFeature0);
+            TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+
+            float[] confidences = outputFeature0.getFloatArray();
+            // find the index of the class with the biggest confidence.
+            int maxPos = 0;
+            for (int i = 0; i < confidences.length; i++) {
+                if (confidences[i] > maxConfidence) {
+                    maxConfidence = confidences[i];
+                    maxPos = i;
+                }
+            }
+            String[] classes = {"Bukan HLB", "HLB", "Sehat"};
+            result = classes[maxPos];
+            maxConfidence = maxConfidence * 100;
+
+            // Releases model resources if no longer used.
+            model.close();
+        } catch (IOException e) {
+            // TODO Handle the exception
+        }
+        return new Pair(result, new DecimalFormat("##.##").format(maxConfidence));
+    }
+
+    private String[] doInference(Bitmap bitmap){
         int imageTensorIndex = 0;
         int[] imageShape = tflite.getInputTensor(imageTensorIndex).shape(); // {1, height, width, 3}
 
@@ -271,18 +328,18 @@ public class GalleryActivity extends AppCompatActivity {
                 + rgbValuesFinal[0][pixpos][pixpos][2];
         Log.d("Trial - RGB2", temp2);
 
-        float[][] outputs = new float[1][3];
+        String[][] outputs = new String[1][3];
 
         tflite.run(rgbValuesFinal, outputs);
 
-        float[] output = outputs[0];
+        String[] output = outputs[0];
 
         String temp = " " +  output[0] + " " + output[1] + " " + output[2];
         Log.d("Trial - Output", temp);
 
-        output[0] = output[0] * 892.24595f + 0.0032483f;
-        output[1] = output[1] * 211.29755f + 0.0f;
-        output[2] = output[2] * 345.45058f + 0.0f;
+//        output[0] = output[0] * 892.24595f + 0.0032483f;
+//        output[1] = output[1] * 211.29755f + 0.0f;
+//        output[2] = output[2] * 345.45058f + 0.0f;
 
         // End of New Code
 
@@ -330,13 +387,25 @@ public class GalleryActivity extends AppCompatActivity {
 //    }
 
     private MappedByteBuffer loadmodelfile(Activity activity) throws IOException {
-        AssetFileDescriptor fileDescriptor=activity.getAssets().openFd("P3Net.tflite");
+        AssetFileDescriptor fileDescriptor=activity.getAssets().openFd("SqueezeNet_Adamax.tflite");
         FileInputStream inputStream=new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel=inputStream.getChannel();
         long startoffset = fileDescriptor.getStartOffset();
         long declaredLength=fileDescriptor.getDeclaredLength();
         return fileChannel.map(FileChannel.MapMode.READ_ONLY,startoffset,declaredLength);
     }
+
+    //next button
+//    public void LoadDetailActivity(View view) {
+//        Intent intent = new Intent(GalleryActivity.this, DetailActivity.class);
+//        startActivity(intent);
+//    }
+
+    //back button
+//    public void loadCameraActivity(View view) {
+//        Intent intent = new Intent(GalleryActivity.this,CameraActivity.class);
+//        startActivity(intent);
+//    }
 
 //    private TensorOperator getPreprocessNormalizeOp() {
 ////        return new NormalizeOp(IMAGE_MEAN, IMAGE_STD);

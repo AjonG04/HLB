@@ -3,9 +3,11 @@ package com.example.leafpiction.Activities;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -20,6 +22,7 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -35,16 +38,21 @@ import com.example.leafpiction.Fragments.BottomCameraFragment;
 import com.example.leafpiction.Model.DataModel;
 import com.example.leafpiction.R;
 import com.example.leafpiction.Util.HistoryDatabaseCRUD;
+import com.example.leafpiction.ml.SqueezenetAdamaxv2;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
@@ -56,7 +64,10 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+
+
 
 import static android.content.ContentValues.TAG;
 
@@ -83,6 +94,8 @@ public class CameraActivity extends AppCompatActivity {
     private float RectRight;
     private float RectBottom;
     private boolean status = false;
+    int imageSize1 = 656;
+    int imageSize2 = 456;
 
 //    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 //    static {
@@ -143,6 +156,29 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
+//        //btn to main actv
+//        MaterialButton btn_to_home = findViewById(R.id.leftArrow_to_home);
+//        btn_to_home.setOnClickListener(new View.OnClickListener(){
+//
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(v.getContext(), MainActivity.class);
+//                v.getContext().startActivity(intent);
+//            }
+//        });
+//
+//        //btn to gal actv
+//        MaterialButton btn_to_gal1 = findViewById(R.id.rightArrow_to_gal);
+//        btn_to_gal1.setOnClickListener(new View.OnClickListener(){
+//
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(v.getContext(), GalleryActivity.class);
+//                v.getContext().startActivity(intent);
+//            }
+//        });
+
 
         textureView = (TextureView)findViewById(R.id.textureview);
         textureView.setSurfaceTextureListener(textureListener);
@@ -218,7 +254,6 @@ public class CameraActivity extends AppCompatActivity {
 
             if (status == false){
 
-                temp.drawRect(0, 0, temp.getWidth(), temp.getHeight(), paint);
                 temp.drawRect(RectLeft, RectTop, RectRight, RectBottom, transparentPaint);
                 temp.drawCircle(fab.getLeft()+fab.getWidth()/2,fab.getTop()+fab.getHeight()/2,fab.getWidth()/2,transparentPaint);
 
@@ -233,14 +268,15 @@ public class CameraActivity extends AppCompatActivity {
 
     private void takePicture(View view) {
         Bitmap bmp = textureView.getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream(500000);
+        bmp.compress(Bitmap.CompressFormat.JPEG, 70, stream);
         byte[] byteArray = stream.toByteArray();
 
-        float[] output =  doInference(bmp);
-        float chlorophyll = output[0];
-        float carotenoid = output[1];
-        float anthocyanin = output[2];
+//        String[] output =  doInference(bmp);
+        Bitmap image = ThumbnailUtils.extractThumbnail(bmp,imageSize1,imageSize2);
+        Pair test = classifyImage(bmp);
+//        String chlorophyll = output[0];
+//        Bitmap image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -251,7 +287,7 @@ public class CameraActivity extends AppCompatActivity {
 
         String filename = "Image_" + timeStamp;
 
-        DataModel dataModel = new DataModel(byteArray, chlorophyll, carotenoid, anthocyanin, datetime, filename, 0);
+        DataModel dataModel = new DataModel(byteArray, test.first.toString(), test.second.toString() + "%", datetime, filename, 0);
 
         String text;
 
@@ -266,6 +302,8 @@ public class CameraActivity extends AppCompatActivity {
         Snackbar snackbar = Snackbar.make(view, text, Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
+
+
 
     private void openCamera(){
         CameraManager manager = (CameraManager)getSystemService(Context.CAMERA_SERVICE);
@@ -397,117 +435,68 @@ public class CameraActivity extends AppCompatActivity {
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
 
-            if (textureView.getBitmap() != null){
-
-                bitmap = textureView.getBitmap();
-
-                float[] output =  doInference(bitmap);
-
-                bot_camera.setCloro(""+new DecimalFormat("###.####").format(output[0]));
-                bot_camera.setCaro(""+new DecimalFormat("###.####").format(output[1]));
-                bot_camera.setAnto(""+new DecimalFormat("###.####").format(output[2]));
-            }
         }
     };
 
-    private float[] doInference(Bitmap bitmap){
-        int imageTensorIndex = 0;
-        int[] imageShape = tflite.getInputTensor(imageTensorIndex).shape(); // {1, height, width, 3}
-
-        imageSizeY = imageShape[1];
-        imageSizeX = imageShape[2];
-        DataType imageDataType = tflite.getInputTensor(imageTensorIndex).dataType();
-
-//        int probabilityTensorIndex = 0;
-//        int[] probabilityShape =
-//                tflite.getOutputTensor(probabilityTensorIndex).shape(); // {1, NUM_CLASSES}
-//
-//        DataType probabilityDataType = tflite.getOutputTensor(probabilityTensorIndex).dataType();
-//
-//        inputImageBuffer = new TensorImage(imageDataType);
-//        outputProbabilityBuffer = TensorBuffer.createFixedSize(probabilityShape, probabilityDataType);
-//        probabilityProcessor = new TensorProcessor.Builder().add(getPostprocessNormalizeOp()).build();
-
+    public Pair classifyImage(Bitmap image){
+        String result = "";
+        float maxConfidence = 0;
         Matrix mat = new Matrix();
         //PROSES CROPPING
-        photo = Bitmap.createBitmap(bitmap, Math.round(RectLeft), Math.round(RectTop),
+        photo = Bitmap.createBitmap(image, Math.round(RectLeft), Math.round(RectTop),
                 Math.round(RectRight)-Math.round(RectLeft),
                 Math.round(RectBottom)-Math.round(RectTop), mat, true);
-        bitmap = Bitmap.createScaledBitmap(photo, 54, 54, true);
-//        photo = Bitmap.createScaledBitmap(photo, 34, 34, true);
-//        inputImageBuffer = loadImage(photo);
-//        inputImageBuffer = loadImage(bitmap);
+        image = Bitmap.createScaledBitmap(photo, 456, 656, true);
 
-//        tflite.run(inputImageBuffer.getBuffer(),outputProbabilityBuffer.getBuffer().rewind());
-//        float[] output =  outputProbabilityBuffer.getFloatArray();
+        try {
+            SqueezenetAdamaxv2 model = SqueezenetAdamaxv2.newInstance(getApplicationContext());
 
-//        float[][] outputs = new float[1][3];;
-//        tflite.run(inputImageBuffer.getBuffer(), outputs);
-//        float[] output = outputs[0];
-//
-//        String temp = output[0] + " " + output[1] + " " + output[2];
-//        Log.d("Output", temp);
-//
-//        output[0] = output[0] * 892.24595f + 0.0032483f;
-//        output[1] = output[1] * 211.29755f + 0.0f;
-//        output[2] = output[2] * 345.45058f + 0.0f;
+            // Creates inputs for reference.
+            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 656, 456, 3}, DataType.FLOAT32);
+            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize1 * imageSize2 * 3);
+            byteBuffer.order(ByteOrder.nativeOrder());
 
-        int x = 54;
-        int y = 54;
-        int componentsPerPixel = 3;
-        int totalPixels = x * y;
-
-        int[] argbPixels = new int[totalPixels];
-        float[][][][] rgbValuesFinal = new float[1][x][y][componentsPerPixel];
-
-        bitmap.getPixels(argbPixels, 0, x, 0, 0, x, y);
-
-        double[][] reds = new double[54][54];
-        double[][] greens = new double[54][54];
-        double[][] blues = new double[54][54];
-
-        int pos;
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                int argbPixel = bitmap.getPixel(i, j);
-                int blue = Color.red(argbPixel);
-                int green = Color.green(argbPixel);
-                int red = Color.blue(argbPixel);
-                rgbValuesFinal[0][i][j][0] = (float) (red/255.0);
-                rgbValuesFinal[0][i][j][1] = (float) (green/255.0);
-                rgbValuesFinal[0][i][j][2] = (float) (blue/255.0);
-                reds[i][j] = red;
-                greens[i][j] = green;
-                blues[i][j] = blue;
+            int[] intValues = new int[imageSize1 * imageSize2];
+            image.getPixels(intValues, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
+            int pixel = 0;
+            //iterate over each pixel and extract R, G, and B values. Add those values individually to the byte buffer.
+            for(int i = 0; i < imageSize1; i ++){
+                for(int j = 0; j < imageSize2; j++){
+                    int val = intValues[pixel++]; // RGB
+                    byteBuffer.putFloat(((val >> 16) & 0xFF) * (1.f / 1));
+                    byteBuffer.putFloat(((val >> 8) & 0xFF) * (1.f / 1));
+                    byteBuffer.putFloat((val & 0xFF) * (1.f / 1));
+                }
             }
+
+            inputFeature0.loadBuffer(byteBuffer);
+
+            // Runs model inference and gets result.
+            SqueezenetAdamaxv2.Outputs outputs = model.process(inputFeature0);
+            TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+
+            float[] confidences = outputFeature0.getFloatArray();
+            // find the index of the class with the biggest confidence.
+            int maxPos = 0;
+
+            for (int i = 0; i < confidences.length; i++) {
+                if (confidences[i] > maxConfidence) {
+                    maxConfidence = confidences[i];
+                    maxPos = i;
+                }
+            }
+            String[] classes = {"Bukan HLB", "HLB", "Sehat"};
+            result = classes[maxPos];
+            maxConfidence = maxConfidence * 100;
+
+            // Releases model resources if no longer used.
+            model.close();
+        } catch (IOException e) {
+            // TODO Handle the exception
         }
-
-        int pixpos = 30;
-        String temp3 = " " + reds[pixpos][pixpos] + " "
-                + greens[pixpos][pixpos] + " "
-                + blues[pixpos][pixpos];
-        Log.d("Trial - RGB", temp3);
-
-        String temp2 = " " + rgbValuesFinal[0][pixpos][pixpos][0] + " "
-                + rgbValuesFinal[0][pixpos][pixpos][1] + " "
-                + rgbValuesFinal[0][pixpos][pixpos][2];
-        Log.d("Trial - RGB2", temp2);
-
-        float[][] outputs = new float[1][3];
-
-        tflite.run(rgbValuesFinal, outputs);
-
-        float[] output = outputs[0];
-
-        String temp = " " +  output[0] + " " + output[1] + " " + output[2];
-        Log.d("Trial - Output", temp);
-
-        output[0] = output[0] * 892.24595f + 0.0032483f;
-        output[1] = output[1] * 211.29755f + 0.0f;
-        output[2] = output[2] * 345.45058f + 0.0f;
-
-        return output;
+        return new Pair(result, new DecimalFormat("##.##").format(maxConfidence));
     }
+
 
     @Override
     protected void onResume() {
@@ -567,7 +556,7 @@ public class CameraActivity extends AppCompatActivity {
 //    }
 
     private MappedByteBuffer loadmodelfile(Activity activity) throws IOException {
-        AssetFileDescriptor fileDescriptor=activity.getAssets().openFd("P3Net.tflite");
+        AssetFileDescriptor fileDescriptor=activity.getAssets().openFd("SqueezeNet_Adamax.tflite");
         FileInputStream inputStream=new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel=inputStream.getChannel();
         long startoffset = fileDescriptor.getStartOffset();
@@ -582,4 +571,10 @@ public class CameraActivity extends AppCompatActivity {
 //        return new NormalizeOp(PROBABILITY_MEAN, PROBABILITY_STD);
 //    }
 
+
+//    @Override
+//    protected void onSaveInstanceState(@NonNull Bundle outState) {
+//        outState.putString("WORKAROUND_FOR_BUG_19917_KEY", "WORKAROUND_FOR_BUG_19917_VALUE");
+//        super.onSaveInstanceState(outState);
+//    }
 }

@@ -7,9 +7,8 @@ public class DatabaseTable {
     // Table History
     protected static final String HISTORY_ID = "id";
     protected static final String HISTORY_PHOTO = "photo";
-    protected static final String HISTORY_CLOROPHYLL = "chlorophyll";
-    protected static final String HISTORY_CAROTENOID = "carotenoid";
-    protected static final String HISTORY_ANTHOCYANIN = "anthocyanin";
+    protected static final String HISTORY_STATUS = "status";
+    protected static final String HISTORY_CONFIDENCE = "confidence";
     protected static final String HISTORY_DATETIME = "datetime";
     protected static final String HISTORY_FILENAME = "filename";
     protected static final String HISTORY_UPLOADED = "uploaded";

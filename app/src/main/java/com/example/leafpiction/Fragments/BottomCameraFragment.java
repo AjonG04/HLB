@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +21,8 @@ public class BottomCameraFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_bottom__camera, container, false);
         final FragmentActivity c = getActivity();
         kloro = (view.findViewById(R.id.textkloro));
-        karo = (view.findViewById(R.id.textkaro));
-        anto = (view.findViewById(R.id.textanto));
+        karo = (view.findViewById(R.id.textstatus));
+        anto = (view.findViewById(R.id.textconfidence));
 
         return view;
     }

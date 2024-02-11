@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 public class HistoryDatabaseHelper extends SQLiteOpenHelper {
 
     // Database Info
-    private static final String DATABASE_NAME = "LeafPiction";
+    private static final String DATABASE_NAME = "HLBScan";
     private static final int DATABASE_VERSION = 2;
     private static HistoryDatabaseHelper sInstance;
 
@@ -41,9 +41,8 @@ public class HistoryDatabaseHelper extends SQLiteOpenHelper {
         String CREATE_USERDATA_TABLE = "CREATE TABLE " + DatabaseTable.TABLE_HISTORY + "("
                 + DatabaseTable.HISTORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                 + DatabaseTable.HISTORY_PHOTO + " BLOB,"
-                + DatabaseTable.HISTORY_CLOROPHYLL + " FLOAT(12),"
-                + DatabaseTable.HISTORY_CAROTENOID + " FLOAT(12),"
-                + DatabaseTable.HISTORY_ANTHOCYANIN + " FLOAT(12),"
+                + DatabaseTable.HISTORY_STATUS + " VARCHAR(12),"
+                + DatabaseTable.HISTORY_CONFIDENCE + " VARCHAR(12),"
                 + DatabaseTable.HISTORY_DATETIME + " VARCHAR(128),"
                 + DatabaseTable.HISTORY_FILENAME + " VARCHAR(255),"
                 + DatabaseTable.HISTORY_UPLOADED + " INT(1)" + ")";

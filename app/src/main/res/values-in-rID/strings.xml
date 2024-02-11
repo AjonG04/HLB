@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Leaf Piction</string>
-    <string name="sub_title">Prediksi Pigmen Daun</string>
+    <string name="app_name">HLB Scan</string>
+    <string name="sub_title">Deteksi Penyakit HLB \ndengan Smartphone</string>
 
     <!-- String for Bottom Navigation Menu -->
     <string name="home">Beranda</string>
@@ -20,7 +20,7 @@
     <string name="empty">Tidak Ada Data Tersimpan</string>
 
     <!-- String for Prediction  -->
-    <string name="detailTitle">Prediksi Pigmen</string>
+    <string name="detailTitle">Deteksi HLB</string>
     <string name="clorophyll">Klorofil</string>
     <string name="carotenoid">Karotenoid</string>
     <string name="antocyanin">Antosianin</string>
@@ -49,7 +49,7 @@
     <string name="univ">Universitas Ma Chung</string>
 
     <!-- String for fragment Help  -->
-    <string name="help_title_1">Prediksi Pigmen dengan Kamera</string>
+    <string name="help_title_1">Deteksi HLB dengan Kamera</string>
     <string name="help_desc_1">Tekan Tombol Ambil Foto untuk melakukan Prediksi Pigmen Langsung. Harap letakkan daun di atas latar belakang putih seperti kertas. Arahkan kamera ponsel Anda ke daun, pastikan daun berada di dalam kotak hijau. Aplikasi akan menampilkan prediksi.</string>
     <string name="help_title_2">Prediksi Pigmen dari Galeri</string>
     <string name="help_desc_2">Tekan Tombol Tambah Gambar dari Galeri untuk memprediksi pigmen dari foto daun. Harap potong foto agar tidak memiliki latar belakang yang berlebihan.</string>
@@ -57,4 +57,35 @@
     <string name="help_desc_3">Tekan Tombol Unggah untuk mengirim gambar Anda ke bank data kami. Kontribusi Anda akan sangat dihargai. Kami akan menggunakannya untuk melanjutkan penelitian kami.</string>
     <string name="next">Lanjut</string>
     <string name="prev">Kembali</string>
+
+    <string name="app_name_fp">Fuzzy Piction</string>
+    <string name="version">versi 1.0</string>
+    <string name="app_desc">Aplikasi Mobile Deteksi \nPenyakit Tanaman Jeruk \nHuangLongBing</string>
+    <string name="pigments">klorofil, karotenoid and antosianin</string>
+    <string name="devs">Pengembang</string>
+    <string name="devs_member">Dr. Kestrilia Rega Prilianti, M. Si \nHendry Setiawan, ST., M.Kom\nRaditya Ariyanta Pradana / 311910020</string>
+    <string name="cal_btn">Kalibrasi</string>
+    <string name="pred_btn">Prediksi</string>
+    <string name="save_img_title">Deteksi HLB</string>
+    <string name="chloro_content">Konten Klorofil (ug/g)</string>
+    <string name="karo_content">Status</string>
+    <string name="anto_content">Konten Antosianin (ug/g)</string>
+    <string name="cam_guide_title">Deteksi HLB dengan Kamera</string>
+    <string name="gall_guide_title">Deteksi HLB dari Galeri</string>
+    <string name="upload_guide_title">Hasil Prediksi</string>
+    <string name="cam_guide">Tekan tombol Ambil Foto untuk \n mengambil foto. Letakkan daun diatas \nlatar belakang putih seperti kertas. Arahkan \nkamera ke daun, pastikan daun berada dalam kotak Hijau.</string>
+    <string name="gall_guide">Tekan tombol Tambah Gambar dari \n Galeri untuk melakukan deteksi \nHLB dari foto daun. Harap potong \n foto agar tidak memiliki latar \n belakang yang berlebih.</string>
+    <string name="upload_guide">Citra yang sudah berhasil diprediksi \n akan menampilkan status dari daun \ndan angka tingkat kepercayaan dari prediksi \nPengguna diberikan kebebasan untuk mempercayai hasil prediksi.</string>
+
+    <string name="calibration">Kalibrasi dan Prediksi</string>
+    <string name="predict">Prediksi</string>
+
+    <string name="doubleback">Silakan klik KEMBALI lagi untuk keluar dari aplikasi</string>
+
+    <string name="save_desc">Simpan</string>
+    <string name="up_desc">Unggah ke Server</string>
+    <string name="del_desc">Hapus</string>
+
+    <string name="cam_desc">Amcil Citra</string>
+    <string name="gal_desc">Unggah dari Galeri</string>
 </resources>

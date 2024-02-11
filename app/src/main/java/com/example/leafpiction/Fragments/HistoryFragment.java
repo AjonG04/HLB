@@ -88,7 +88,7 @@ public class HistoryFragment extends Fragment  {
         final Button btn_latest = view.findViewById(R.id.btn_latest);
         final Button btn_oldest = view.findViewById(R.id.btn_oldest);
 
-        ColorStateList colorPrimary = ContextCompat.getColorStateList(context, R.color.colorPrimary);
+        ColorStateList colorPrimary = ContextCompat.getColorStateList(context, R.color.PrimaryGreen);
         ColorStateList colorWhite = ContextCompat.getColorStateList(context, R.color.white);
 
         if(defaultOrder){

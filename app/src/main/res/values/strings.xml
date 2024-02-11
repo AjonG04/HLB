@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Leaf Piction</string>
-    <string name="sub_title">Leaf Pigment Prediction</string>
+    <string name="app_name">HLB Scan</string>
+    <string name="sub_title">HLB Detection From \nYour Smartphone</string>
 
     <!-- String for Bottom Navigation Menu -->
     <string name="home">Home</string>
@@ -19,10 +19,10 @@
     <string name="empty">No Data Saved</string>
 
     <!-- String for Prediction  -->
-    <string name="detailTitle">Pigment Prediction</string>
+    <string name="detailTitle">HLB Detection</string>
     <string name="clorophyll">Chlorophyll</string>
     <string name="carotenoid">Carotenoid</string>
-    <string name="antocyanin">Antocyanin</string>
+    <string name="antocyanin">Anthocyanin</string>
 
     <!-- String for Button  -->
     <string name="save">Save Photo</string>
@@ -56,4 +56,35 @@
     <string name="help_desc_3">Click Button Upload to send your image to our data bank. Your contribution will be greatly appreciated. We will use it to further our study.</string>
     <string name="next">Next</string>
     <string name="prev">Prev</string>
+
+    <string name="app_name_fp">HLB Scan</string>
+    <string name="version">version 1.0</string>
+    <string name="app_desc">Citrus Plant Diseases \nHuangLongBing Detection\n Mobile App</string>
+    <string name="pigments">chlorophyll, carotenoid and antocyanin</string>
+    <string name="devs">Developers</string>
+    <string name="devs_member">Dr. Kestrilia Rega Prilianti, M. Si \nHendry Setiawan, ST., M.Kom\nRaditya Ariyanta Pradana / 311910020</string>
+    <string name="cal_btn">Calibrate</string>
+    <string name="pred_btn">Predict</string>
+    <string name="save_img_title">HLB Detection</string>
+    <string name="chloro_content">Chlorophyll Content (ug/g)</string>
+    <string name="karo_content">Status</string>
+    <string name="anto_content">Anthocyanin Content (ug/g)</string>
+    <string name="cam_guide_title">HLB Detection with Camera</string>
+    <string name="gall_guide_title">HLB Detection from Gallery</string>
+    <string name="upload_guide_title">Detection Result</string>
+    <string name="cam_guide">Press Take Photo Button to take \nphotos. Place the leaf above a white \npaper as background. Point the \ncamera at the leaf, make sure the leaf \nis inside the green box.</string>
+    <string name="gall_guide">Press Add Picture \nfrom Gallery to detect \nHLB from any existed leaf photo.\nPlease crop the photo first, so there \nwon\'t be any excessive backgrounds.</string>
+    <string name="upload_guide">The image that has been successfully predicted \nwill display the status of the leaf \nand the confidence level of the prediction. \nUsers are given the freedom \nto trust the prediction results.</string>
+
+    <string name="calibration">Calibrate and Predict</string>
+    <string name="predict">Predict</string>
+
+    <string name="doubleback">Please click BACK again to exit</string>
+
+    <string name="save_desc">Save</string>
+    <string name="up_desc">Upload to Server</string>
+    <string name="del_desc">Delete</string>
+
+    <string name="cam_desc">Take Photo</string>
+    <string name="gal_desc">Upload From Gallery</string>
 </resources>

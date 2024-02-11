@@ -19,34 +19,34 @@
             android:id="@+id/img_item_photo"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@color/black"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="vertical"
-            android:padding="10dp"
-            android:layout_marginTop="8dp">
+            android:padding="10dp">
 
             <!-- Title, secondary and supporting text -->
             <TextView
                 android:id="@+id/tv_item_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/sourcesansprobold"
-                android:textSize="16sp"
+                android:fontFamily="@font/opensanssemibold"
+                android:text="Image_10012020"
                 android:textColor="@color/black"
-                android:text="Image_10012020" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_item_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:layout_marginTop="8dp"
-                android:fontFamily="@font/sourcesansproregular"
-                android:text="10 Jan 2020 10:43" />
+                android:fontFamily="@font/opensansregular"
+                android:text="10 Jan 2020 10:43"
+                android:textSize="12sp" />
 
         </LinearLayout>
 

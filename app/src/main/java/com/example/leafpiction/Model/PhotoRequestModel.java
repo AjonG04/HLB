@@ -3,9 +3,9 @@ package com.example.leafpiction.Model;
 public class PhotoRequestModel {
     private String photo;
     private int id;
-    private float chlorophyll, carotenoid, antocyanin;
+    private String chlorophyll, carotenoid, antocyanin;
 
-    public PhotoRequestModel(String photo, int id, float chlorophyll, float carotenoid, float antocyanin){
+    public PhotoRequestModel(String photo, int id, String chlorophyll, String carotenoid, String antocyanin){
         this.photo = photo;
         this.id = id;
         this.chlorophyll = chlorophyll;
@@ -29,27 +29,27 @@ public class PhotoRequestModel {
         this.id = id;
     }
 
-    public float getChlorophyll() {
+    public String getChlorophyll() {
         return chlorophyll;
     }
 
-    public void setChlorophyll(float chlorophyll) {
+    public void setChlorophyll(String chlorophyll) {
         this.chlorophyll = chlorophyll;
     }
 
-    public float getCarotenoid() {
+    public String getCarotenoid() {
         return carotenoid;
     }
 
-    public void setCarotenoid(float carotenoid) {
+    public void setCarotenoid(String carotenoid) {
         this.carotenoid = carotenoid;
     }
 
-    public float getAntocyanin() {
+    public String getAntocyanin() {
         return antocyanin;
     }
 
-    public void setAntocyanin(float antocyanin) {
+    public void setAntocyanin(String antocyanin) {
         this.antocyanin = antocyanin;
     }
 }

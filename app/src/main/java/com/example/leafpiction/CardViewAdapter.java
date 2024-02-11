@@ -67,9 +67,9 @@ public class CardViewAdapter extends RecyclerView.Adapter<CardViewAdapter.CardVi
                     Intent intent = new Intent(view.getContext(), DetailActivity.class);
                     intent.putExtra("id", list.get(getAdapterPosition()).getId());
                     intent.putExtra("photo", list.get(getAdapterPosition()).getPhoto());
-                    intent.putExtra("cloro", list.get(getAdapterPosition()).getChlorophyll());
-                    intent.putExtra("caro", list.get(getAdapterPosition()).getCarotenoid());
-                    intent.putExtra("anto", list.get(getAdapterPosition()).getAnthocyanin());
+                    intent.putExtra("cloro", list.get(getAdapterPosition()).getStatus());
+                    intent.putExtra("caro", list.get(getAdapterPosition()).getConfidence());
+                    intent.putExtra("anto", list.get(getAdapterPosition()).getStatus());
                     intent.putExtra("uploaded", list.get(getAdapterPosition()).getUploaded());
                     view.getContext().startActivity(intent);
                 }

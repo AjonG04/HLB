@@ -4,9 +4,8 @@ public class DataModel {
 
     private int id;
     private byte[] photo;
-    private float chlorophyll;
-    private float carotenoid;
-    private float anthocyanin;
+    private String status;
+    private String confidence;
     private String datetime;
     private String filename;
     private int uploaded;
@@ -14,22 +13,20 @@ public class DataModel {
     public DataModel() {
     }
 
-    public DataModel(byte[] photo, float chlorophyll, float carotenoid, float anthocyanin, String datetime, String filename, int uploaded) {
+    public DataModel(byte[] photo, String status, String confidence, String datetime, String filename, int uploaded) {
         this.photo = photo;
-        this.chlorophyll = chlorophyll;
-        this.carotenoid = carotenoid;
-        this.anthocyanin = anthocyanin;
+        this.status = status;
+        this.confidence = confidence;
         this.datetime = datetime;
         this.filename = filename;
         this.uploaded = uploaded;
     }
 
-    public DataModel(int id, byte[] photo, float chlorophyll, float carotenoid, float anthocyanin, String datetime, String filename, int uploaded) {
+    public DataModel(int id, byte[] photo, String status, String confidence, String datetime, String filename, int uploaded) {
         this.id = id;
         this.photo = photo;
-        this.chlorophyll = chlorophyll;
-        this.carotenoid = carotenoid;
-        this.anthocyanin = anthocyanin;
+        this.status = status;
+        this.confidence = confidence;
         this.datetime = datetime;
         this.filename = filename;
         this.uploaded = uploaded;
@@ -51,28 +48,20 @@ public class DataModel {
         this.photo = photo;
     }
 
-    public float getChlorophyll() {
-        return chlorophyll;
+    public String getStatus() {
+        return status;
     }
 
-    public void setChlorophyll(float chlorophyll) {
-        this.chlorophyll = chlorophyll;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public float getCarotenoid() {
-        return carotenoid;
+    public String getConfidence() {
+        return confidence;
     }
 
-    public void setCarotenoid(float carotenoid) {
-        this.carotenoid = carotenoid;
-    }
-
-    public float getAnthocyanin() {
-        return anthocyanin;
-    }
-
-    public void setAnthocyanin(float anthocyanin) {
-        this.anthocyanin = anthocyanin;
+    public void setConfidence(String confidence) {
+        this.confidence = confidence;
     }
 
     public String getDatetime() {

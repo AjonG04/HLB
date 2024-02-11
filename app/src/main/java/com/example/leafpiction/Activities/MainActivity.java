@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -18,10 +20,14 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.leafpiction.Fragments.AboutFragment;
 import com.example.leafpiction.Fragments.HelpThreeFragment;
@@ -40,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     ImageView changeLang;
+//    Toolbar toolbar;
 
     private static final int CAMERA_REQUEST = 1888;
 
@@ -57,10 +64,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation);
+//        toolbar = findViewById(R.id.toolbar);
+//        toolbar.setTitle("");
+//        setSupportActionBar(toolbar);;
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+//        loadFrag(new HomeFragment(),0);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 
-        changeLang = findViewById(R.id.img_change_language);
+        changeLang = findViewById(R.id.buger_btn);
         changeLang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+//    private void setSupportActionBar(Toolbar toolbar) {
+//    }
 
     @Override
     protected void onRestart() {
@@ -108,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commitAllowingStateLoss();
     }
 
     public void loadCameraActivity(View view) {
@@ -145,13 +161,25 @@ public class MainActivity extends AppCompatActivity {
             Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
 
             loadGalleryActivity(scaled);
+//            loadCalibrationActivity(scaled);
 //            loadGalleryActivity(bitmap);
 
         }
     }
 
-    private void loadGalleryActivity(Bitmap bitmap){
+    public void loadGalleryActivity(Bitmap bitmap){
         Intent intent = new Intent(this, GalleryActivity.class);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        intent.putExtra("photo", byteArray);
+        startActivity(intent);
+    }
+
+    public void loadCalibrationActivity(Bitmap bitmap){
+        Intent intent = new Intent(this, CalibrationActivity.class);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -236,5 +264,26 @@ public class MainActivity extends AppCompatActivity {
     public void LoadHelpThree(View view){
         Fragment selectedFragment = new HelpThreeFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+    }
+
+
+    boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce){
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, R.string.doubleback, Toast.LENGTH_SHORT).show();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        },2000);
     }
 }

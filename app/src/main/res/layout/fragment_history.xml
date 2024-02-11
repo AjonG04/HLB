@@ -14,15 +14,17 @@
         <LinearLayout
             android:id="@+id/ll_sort"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sort"
                 android:textSize="16sp"
-                android:layout_margin="20dp"
-                android:fontFamily="@font/sourcesansprobold"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/opensanssemibold"
                 android:textColor="@color/black"
                 />
 
@@ -34,9 +36,8 @@
                 android:onClick="reverseListOrder"
                 tools:ignore="OnClick"
                 android:clickable="false"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="@font/sourcesansprobold"/>
+                android:layout_marginEnd="10dp"
+                android:fontFamily="@font/opensanssemibold"/>
 
             <Button
                 android:id="@+id/btn_oldest"
@@ -44,21 +45,27 @@
                 android:layout_height="wrap_content"
                 android:text="@string/oldest"
                 android:onClick="reverseListOrder"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="10dp"
-                android:textColor="@color/colorPrimary"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/PrimaryGreen"
                 android:backgroundTint="@color/white"
-                android:fontFamily="@font/sourcesansprobold"
+                android:fontFamily="@font/opensanssemibold"
                 tools:ignore="OnClick" />
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_data"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/item_card" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="90dp"
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_card"
+                />
+        </ScrollView>
+
 
     </LinearLayout>
 
@@ -85,7 +92,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/sourcesansproregular"
+            android:fontFamily="@font/opensanssemibold"
             android:letterSpacing="0.1"
             android:text="@string/empty"
             android:textAlignment="center"
